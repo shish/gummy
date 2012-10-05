@@ -1,0 +1,34 @@
+{% macro commentbox(project=None, branch=None, commit=None, file=None, line=None) -%}
+	<li class='comment'>
+		<form action="/add_comment" method="POST">
+			<input type="hidden" name="project" value="{{ project or '' }}" />
+			<input type="hidden" name="branch" value="{{ branch or '' }}" />
+			<input type="hidden" name="commit" value="{{ commit or '' }}" />
+			<input type="hidden" name="file" value="{{ file or '' }}" />
+			<input type="hidden" name="line" value="{{ line or '' }}" />
+			<div class="header">
+				<span class="author">
+					<input type="text" name="author" placeholder="Name &lt;email@example.com&gt;" />
+				</span>
+			</div>
+			<div class="message">
+				<textarea name="message"></textarea>
+				<input type="submit" value="Submit Comment" />
+			</div>
+		</form>
+	</li>
+{%- endmacro %}
+
+{% macro comment(comment) -%}
+	<li class='comment'>
+		<div class="header">
+			{% if comment.file %}
+				<span class="hash">{{comment.file}}:{{comment.line}}</span>
+			{% endif %}
+			<span class="author">{{comment.author}} {{comment.datetime}}</span>
+		</div>
+		<div class="message">
+			{{comment.message}}
+		</div>
+	</li>
+{%- endmacro %}

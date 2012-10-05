@@ -1,0 +1,170 @@
+/* vim:ft=css */
+
+BODY {
+	background: #ABC;
+}
+
+NAV {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	font-weight: bold;
+
+	A {
+		text-decoration: none;
+		color: black;
+	}
+	A:visited {
+		color: black;
+	}
+	UL {
+		background: #445;
+		height: 32px;
+		margin: 0px;
+		padding: 0px;
+		border-bottom: 2px solid black;
+	}
+	LI {
+		float: left;
+		padding-top: 6px;
+		padding-left: 16px;
+		padding-right: 8px;
+		height: 26px;
+	}
+	LI.index {
+		background-color: #889;
+	}
+	LI.index + LI {
+		background-image: url("/static/img/from-index.png");
+		background-position: left center;
+		background-repeat: no-repeat;
+	}
+	LI.project {
+		background-color: #AAB;
+	}
+	LI.project + LI {
+		background-image: url("/static/img/from-project.png");
+		background-position: left center;
+		background-repeat: no-repeat;
+	}
+	LI.branch {
+		background-color: #CCD;
+	}
+	LI.branch + LI {
+		background-image: url("/static/img/from-branch.png");
+		background-position: left center;
+		background-repeat: no-repeat;
+	}
+	LI.commit {
+		background-color: #EEF;
+	}
+	LI.commit + LI {
+		background-image: url("/static/img/from-commit.png");
+		background-position: left center;
+		background-repeat: no-repeat;
+	}
+}
+
+
+HEADER {
+	clear: both;
+	margin: 32px;
+
+}
+
+
+ARTICLE {
+	margin-top: 64px;
+
+	.eventlist {
+		list-style: none;
+		padding: 0px;
+	}
+	.subcomments {
+		padding-left: 64px;
+	}
+
+	.project, .branch, .commit, .comment {
+		border: 2px solid black;
+		border-radius: 8px;
+		margin: 32px;
+
+		DIV:first-child {
+			border-radius: 4px 4px 0px 0px;
+		}
+		DIV:last-child {
+			border-radius: 0px 0px 4px 4px;
+		}
+
+		.header {
+			border-bottom: 1px solid gray;
+			padding: 4px;
+
+			.hash {
+				float: right;
+			}
+		}
+
+		.message {
+			padding: 4px;
+			font-family: monospace;
+		}
+
+		.diff {
+			padding: 4px;
+
+			.diff-toggle {
+				text-align: center;
+			}
+
+			.diff-content {
+				font-family: monospace;
+				margin: 8px;
+				border: 1px solid gray;
+				border-radius: 4px;
+				padding: 4px;
+				background: #CCD;
+				font-size: 0.75em;
+			}
+			.diff-toggle + .diff-content {
+				display: none;
+			}
+		}
+	}
+
+	.project, .branch, .commit {
+		.header {background: #AAB;}
+		.message {background: #CCD;}
+		.diff {background: #889;}
+	}
+	.comment {
+		.header {background: #ABA;}
+		.message {background: #CDC;}
+		.diff {background: #898;}
+	}
+}
+
+
+FOOTER {
+	background: #445;
+	margin: 0px;
+	padding: 4px;
+	border-top: 2px solid black;
+	text-align: center;
+	font-weight: bold;
+	color: #889;
+}
+
+.comment {
+	TEXTAREA {
+	   -moz-box-sizing:    border-box;
+	   -webkit-box-sizing: border-box;
+	   -ms-box-sizing:     border-box;
+	    box-sizing:        border-box;
+	}
+	TEXTAREA,
+	INPUT[type="submit"] {
+		width: 100%;
+	}
+}
