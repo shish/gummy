@@ -8,7 +8,7 @@ from sqlalchemy.exc import DBAPIError
 from subprocess import Popen, PIPE
 import os
 
-from .models import (
+from ..models import (
     DBSession,
     Workspace,
     Comment
@@ -73,37 +73,3 @@ def commit(request):
     events = patches + comments
 
     return {"project": project, "branch": branch, "commit": commit, "events": sorted(events)}
-
-
-@view_config(route_name='add_comment')
-def add_comment(request):
-    with transaction.manager:
-        model = Comment(
-            project = request.POST.get("project"),
-            branch = request.POST.get("branch"),
-            commit = request.POST.get("commit"),
-            file = request.POST.get("file"),
-            line = request.POST.get("line"),
-            author = request.POST.get("author"),
-            message = request.POST.get("message"),
-        )
-        DBSession.add(model)
-    return HTTPFound(request.url)
-
-
-conn_err_msg = """\
-Pyramid is having a problem using your SQL database.  The problem
-might be caused by one of the following things:
-
-1.  You may need to run the "initialize_gummy_db" script
-    to initialize your database tables.  Check your virtual 
-    environment's "bin" directory for this script and try to run it.
-
-2.  Your database server may not be running.  Check that the
-    database server referred to by the "sqlalchemy.url" setting in
-    your "development.ini" file is running.
-
-After you fix the problem, please restart the Pyramid application to
-try it again.
-"""
-

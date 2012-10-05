@@ -1,95 +1,11 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    Text,
-    DateTime,
-    )
-
-from sqlalchemy import func
-
-from sqlalchemy.ext.declarative import declarative_base
-
-from sqlalchemy.orm import (
-    scoped_session,
-    sessionmaker,
-    )
-
-from zope.sqlalchemy import ZopeTransactionExtension
-
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-Base = declarative_base()
-
-
-class Event(object):
-    def __cmp__(self, other):
-        return cmp(str(self.key), str(other.key))
-
-
-class Comment(Base, Event):
-    __tablename__ = 'comment'
-
-    id = Column(Integer, nullable=False, primary_key=True)
-    
-    project = Column(Text)
-    branch = Column(Text)
-    commit = Column(Text)
-    file = Column(Text)
-    line = Column(Integer)
-    
-    author = Column(Text, nullable=False)
-    timestamp = Column(DateTime, nullable=False, default=func.now())
-    message = Column(Text, nullable=False)
-    
-    def __init__(self, author, message, project=None, branch=None, commit=None, file=None, line=None, timestamp=None):
-        self.project = project
-        self.branch = branch
-        self.commit = commit
-        self.file = file
-        self.line = line
-        
-        self.author = author
-        self.message = message
-        if timestamp:
-            self.timestamp = timestamp
-
-    @property
-    def type(self):
-        return "comment"
-
-    @property
-    def key(self):
-        return self.timestamp
-
-
 import os
 from subprocess import Popen, PIPE
 from datetime import datetime
 
-
-class Workspace(object):
-    def __init__(self, root):
-        self.root = root
-
-    def get_projects(self):
-        projects = {}
-        for project in os.listdir(self.root):
-            fullpath = os.path.join(self.root, project)
-            if os.path.exists(os.path.join(fullpath, ".git", "HEAD")) or os.path.exists(os.path.join(fullpath, "HEAD")):
-                projects[project] = GitProject(self, project)
-        return projects
-
-    def get_project(self, name):
-        return self.get_projects()[name]
-
-    def get_comments(self):
-        return DBSession.query(Comment).filter(
-            Comment.project==None,
-            Comment.branch==None,
-            Comment.commit==None
-        ).all()
+from .db import DBSession, Comment, Event
 
 
-class GitProject(object):
+class GitProject(Event):
     def __init__(self, workspace, name):
         self.workspace = workspace
         self.name = name
@@ -146,7 +62,7 @@ class GitProject(object):
         return "%s: %s" % (self.name, self.description)
 
 
-class GitBranch(object):
+class GitBranch(Event):
     def __init__(self, project, name, status):
         self.project = project
         self.name = name
