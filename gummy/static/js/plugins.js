@@ -14,6 +14,8 @@
         // Only stub undefined methods.
         console[methods[length]] = console[methods[length]] || noop;
     }
+
+	$("time").timeago();
 }());
 
 // Place any jQuery/helper plugins in here.

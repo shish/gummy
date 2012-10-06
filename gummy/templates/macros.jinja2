@@ -25,7 +25,8 @@
 			{% if comment.file %}
 				<span class="hash">{{comment.file}}:{{comment.line}}</span>
 			{% endif %}
-			<span class="author">{{comment.author}} {{comment.timestamp}}</span>
+			<span class="author">{{comment.author}}</span>
+			<time datetime="{{comment.timestamp.isoformat()}}">{{comment.timestamp}}</time>
 		</div>
 		<div class="message">
 			{{comment.message}}
