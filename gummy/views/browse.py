@@ -8,10 +8,12 @@ from sqlalchemy.exc import DBAPIError
 from subprocess import Popen, PIPE
 import os
 
-from ..models import (
+from ..models.db import (
     DBSession,
-    Workspace,
     Comment
+    )
+from ..models.workspace import (
+    Workspace,
     )
 
 
@@ -23,7 +25,7 @@ appconf = {
 @view_config(route_name='index', renderer='templates/index.jinja2')
 def index(request):
     workspace = Workspace(appconf.get("project_root"))
-    
+
     comments = workspace.get_comments()
     projects = workspace.get_projects()
     events = comments + projects.values()
@@ -35,7 +37,7 @@ def index(request):
 def project(request):
     workspace = Workspace(appconf.get("project_root"))
     project = workspace.get_project(request.matchdict["project"])
-    
+
     comments = project.get_comments()
     branches = project.get_branches()
     events = comments + branches.values()
@@ -54,7 +56,9 @@ def branch(request):
     #except DBAPIError:
     #    return Response(conn_err_msg, content_type='text/plain', status_int=500)
 
-    commits = branch.get_commits()
+    squash = request.GET.get("squash", "off") == "on"
+
+    commits = branch.get_commits(squash)
     comments = branch.get_comments()
     events = commits + comments
 

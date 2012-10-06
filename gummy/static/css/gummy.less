@@ -1,4 +1,6 @@
-/* vim:ft=css */
+/*
+ * vim:ft=css
+ */ 
 
 BODY {
 	background: #ABC;
@@ -143,6 +145,17 @@ ARTICLE {
 		.message {background: #CDC;}
 		.diff {background: #898;}
 	}
+	.branch.merged {
+		color: #888;
+		.header {background: #AAA;}
+		.message {background: #CCC;}
+		.diff {background: #888;}
+	}
+	.branch.unmerged {
+		.header {background: #BBA;}
+		.message {background: #DDC;}
+		.diff {background: #998;}
+	}
 }
 
 
@@ -163,8 +176,14 @@ FOOTER {
 	   -ms-box-sizing:     border-box;
 	    box-sizing:        border-box;
 	}
-	TEXTAREA,
+	INPUT[name="author"] {
+		width: 300px;
+	}
 	INPUT[type="submit"] {
+		width: 100%;
+	}
+	TEXTAREA {
+		height: 150px;
 		width: 100%;
 	}
 }

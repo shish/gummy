@@ -15,7 +15,7 @@
 		{% if event.type == "comment" %}
 			{{ macros.comment(event) }}
 		{% else %}
-			<li class="branch">
+			<li class="branch {{event.status}}">
 				<div class="header">
 					<div class="author">
 						<a href="{{route_url("branch", project=project.name, branch=event.name)}}">
