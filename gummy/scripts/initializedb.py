@@ -34,18 +34,18 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model = Comment(
-            author="Shish <shish@shishnet.org>",
-            message="global comment",
-            timestamp=datetime(2012, 10, 04, 23, 03, 35))
-        DBSession.add(model)
+        #model = Comment(
+        #    author="Shish <shish@shishnet.org>",
+        #    message="global comment",
+        #    timestamp=datetime(2012, 10, 04, 23, 03, 35))
+        #DBSession.add(model)
 
-        model = Comment(
-            project="gummy",
-            author="Shish <shish@shishnet.org>",
-            message="project comment",
-            timestamp=datetime(2012, 10, 04, 23, 03, 35))
-        DBSession.add(model)
+        #model = Comment(
+        #    project="gummy",
+        #    author="Shish <shish@shishnet.org>",
+        #    message="project comment",
+        #    timestamp=datetime(2012, 10, 04, 23, 03, 35))
+        #DBSession.add(model)
 
         model = Comment(
             project="gummy",
@@ -54,7 +54,7 @@ def main(argv=sys.argv):
             message="branch comment",
             timestamp=datetime(2012, 10, 04, 19, 20, 28))
         DBSession.add(model)
-        
+
         model = Comment(
             project="gummy",
             branch="templates",

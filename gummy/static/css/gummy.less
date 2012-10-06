@@ -5,6 +5,17 @@
 BODY {
 	background: #ABC;
 }
+A {
+	text-decoration: none;
+}
+.avatar {
+	border: 1px solid black;
+	border-radius: 4px;
+}
+.header .icon {
+	float: left;
+	margin-right: 4px;
+}
 
 NAV {
 	position: fixed;
@@ -14,7 +25,6 @@ NAV {
 	font-weight: bold;
 
 	A {
-		text-decoration: none;
 		color: black;
 	}
 	A:visited {
@@ -78,6 +88,8 @@ HEADER {
 
 ARTICLE {
 	margin-top: 64px;
+	margin-left: 32px;
+	margin-right: 32px;
 
 	.eventlist {
 		list-style: none;
@@ -90,7 +102,7 @@ ARTICLE {
 	.project, .branch, .commit, .comment {
 		border: 2px solid black;
 		border-radius: 8px;
-		margin: 32px;
+		margin-bottom: 32px;
 
 		DIV:first-child {
 			border-radius: 4px 4px 0px 0px;

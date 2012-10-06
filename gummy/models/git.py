@@ -74,6 +74,7 @@ class GitBranch(Event):
         self.message = c.message
         self.timestamp = datetime.fromtimestamp(c.commit_time)
         self.status = status
+        self.author = c.author
         self.key = (1 if self.status == "merged" else 0), self.timestamp
 
     def get_commits(self, squash=False):

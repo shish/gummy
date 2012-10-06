@@ -18,15 +18,18 @@
 		{% else %}
 			<li class='commit'>
 				<div class="header">
+					<span class="icon">{{avatar(event.author, 48)}}</span>
+
 					<span class="author">
-						<a href="{{route_url("commit", project=project.name, branch=branch.name, commit=event.name)}}">{{event.name[:8]}}</a>
-						({{len(event.get_comments())}} comments)
+						<a href="{{route_url("commit", project=project.name, branch=branch.name, commit=event.name)}}">{{event.name[:8]}}</a>:
 					</span>
+
+					{{len(event.comments)}} comments
+
 					<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
 				</div>
 				<div class="message">
 					{{event.message}}
-					<br><br>-- {{event.author}}
 				</div>
 				{% if request.GET.get("squash") == "on" %}
 				<div class="diff">

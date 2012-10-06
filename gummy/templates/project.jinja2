@@ -17,16 +17,26 @@
 		{% else %}
 			<li class="branch {{event.status}}">
 				<div class="header">
+
 					<span class="author">
-						<a href="{{route_url("branch", project=project.name, branch=event.name)}}">
-							{{event.name}}
-							({{len(event.get_commits())}} commits, {{len(event.get_comments())}} comments)
-						</a>
+					<span class="icon">{{avatar(event.author, 48)}}</span>
+						<a href="{{route_url("branch", project=project.name, branch=event.name)}}">{{event.name}}</a>:
+
+                        {% if len(event.get_commits()) > 0 %}
+                            {{len(event.get_commits())}} commits,
+                        {% else %}
+                            merged,
+                        {% endif %}
+
+                        {{len(event.get_comments())}} comments
+                        {% for c in event.get_comments() %}
+                            {{ avatar(c.author) }}
+                        {% endfor %}
 					</span>
                     <time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
 				</div>
 				<div class="message">
-					{{event.message}}
+					Last commit: {{event.message}}
 				</div>
 			</li>
 		{% endif %}

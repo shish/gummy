@@ -1,5 +1,8 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
+import hashlib
+import re
+from jinja2 import Markup
 
 from .models.db import (
     DBSession,
@@ -10,13 +13,25 @@ from .models.db import (
 def config_templates(config):
     config.include('pyramid_jinja2')
     config.add_jinja2_search_path("gummy:templates")
+
+    # global globals
+    env = config.get_jinja2_environment()
+    def avatar(email, size=20):
+        m = re.match(".* <(.*)>", email)
+        if m:
+            email = m.group(1)
+        h = hashlib.md5(email).hexdigest()
+        return Markup('<img class="avatar" width="%d" height="%d" src="https://secure.gravatar.com/avatar/%s?s=%d">' % (size, size, h, size))
+    env.globals['len'] = len
+    env.globals['avatar'] = avatar
+
+    # per-request globals
     def add_renderer_globals(event):
         def simple_static_url(name):
             return event["request"].static_url('gummy:static/'+name)
         event['static_url'] = simple_static_url
         event['route_url'] = event["request"].route_url
         event['route_path'] = event["request"].route_path
-        event['len'] = len
     config.add_subscriber(add_renderer_globals, 'pyramid.events.BeforeRender')
 
 
