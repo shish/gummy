@@ -7,6 +7,7 @@ import transaction
 from sqlalchemy.exc import DBAPIError
 from subprocess import Popen, PIPE
 import os
+import datetime
 
 from ..models.db import (
     DBSession,
@@ -27,6 +28,7 @@ def add_comment(request):
             line = request.POST.get("line") or None,
             author = request.POST.get("author"),
             message = request.POST.get("message"),
+            timestamp = datetime.datetime.now(),
         )
         DBSession.add(model)
     return HTTPFound(request.referrer)
