@@ -19,16 +19,16 @@
 			<li class='commit'>
 				<div class="header">
 					<span class="author">
-						<a href="{{route_url("commit", project=project.name, branch=branch.name, commit=event.name)}}">{{event.name}}</a>
+						<a href="{{route_url("commit", project=project.name, branch=branch.name, commit=event.name)}}">{{event.name[:8]}}</a>
 						({{len(event.get_comments())}} comments)
-                    </span>
-                    <time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+					</span>
+					<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
 				</div>
 				<div class="message">
 					{{event.message}}
 					<br><br>-- {{event.author}}
 				</div>
-                {% if request.GET.get("squash") == "on" %}
+				{% if request.GET.get("squash") == "on" %}
 				<div class="diff">
 					<div class="diff-toggle">
 						Toggle Diff Content
@@ -37,7 +37,7 @@
 						<pre>{{event.diff}}</pre>
 					</div>
 				</div>
-                {% endif %}
+				{% endif %}
 			</li>
 			{% if len(event.get_comments()) != 0 %}
 			<div class="subcomments">
