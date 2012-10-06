@@ -30,6 +30,9 @@ def index(request):
     projects = workspace.get_projects()
     events = comments + projects.values()
 
+    events = sorted(events)
+    events.reverse()
+
     return {'events': events}
 
 

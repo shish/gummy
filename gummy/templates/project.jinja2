@@ -17,20 +17,19 @@
 		{% else %}
 			<li class="branch {{event.status}}">
 				<div class="header">
-					<div class="author">
+					<span class="author">
 						<a href="{{route_url("branch", project=project.name, branch=event.name)}}">
-							{{event.name}} ({{event.status}})
+							{{event.name}}
 							({{len(event.get_commits())}} commits, {{len(event.get_comments())}} comments)
 						</a>
-					</div>
+					</span>
+                    <time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
 				</div>
 				<div class="message">
-					Last update: {{event.last_update}}
-					<br>{{event.message}}
+					{{event.message}}
 				</div>
 			</li>
 		{% endif %}
 	{% endfor %}
-	{{ macros.commentbox(project.name) }}
 </ul>
 {% endblock %}

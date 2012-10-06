@@ -16,6 +16,9 @@ class GitProject(Event):
         elif os.path.exists(os.path.join(workspace.root, name, "HEAD")):
             self.root = os.path.join(workspace.root, name)
 
+        self.timestamp = datetime.fromtimestamp(os.path.getmtime(self.root))
+        self.key = self.timestamp
+
         from dulwich.repo import Repo
         self.repo = Repo(self.root)
 
@@ -69,9 +72,9 @@ class GitBranch(Event):
         self.name = name
         c = project.repo[project.repo.ref("refs/heads/"+name)]
         self.message = c.message
-        self.last_update = datetime.fromtimestamp(c.commit_time)
+        self.timestamp = datetime.fromtimestamp(c.commit_time)
         self.status = status
-        self.key = (1 if self.status == "merged" else 0), self.last_update
+        self.key = (1 if self.status == "merged" else 0), self.timestamp
 
     def get_commits(self, squash=False):
         if squash:
@@ -108,8 +111,8 @@ class GitCommit(Event):
         self.author_time = c.author_time
         self.committer = c.committer
         self.message = c.message
-        self.datetime = datetime.fromtimestamp(c.author_time)
-        self.key = self.datetime
+        self.timestamp = datetime.fromtimestamp(c.author_time)
+        self.key = self.timestamp
 
     @property
     def diff(self):

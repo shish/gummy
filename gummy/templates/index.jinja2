@@ -16,9 +16,10 @@
 		{% else %}
 			<li class="project">
 				<div class="header">
-					<div class="author">
+					<span class="author">
 						<a href="{{route_url("project", project=event.name)}}">{{event.name}}</a>
-					</div>
+					</span>
+                    <time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
 				</div>
 				<div class="message">
 					{{event.description}}
@@ -26,6 +27,5 @@
 			</li>
 		{% endif %}
 	{% endfor %}
-	{{ macros.commentbox() }}
 </ul>
 {% endblock %}
