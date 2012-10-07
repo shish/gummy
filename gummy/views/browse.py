@@ -15,6 +15,7 @@ from ..models.db import (
 from ..models.workspace import (
     Workspace,
     CommitStreak,
+    CommentBox,
     )
 
 
@@ -87,6 +88,8 @@ def branch(request):
         if g.commits[0].type != "commit":
             grouped[n] = g.commits[0]
 
+    grouped.append(CommentBox(project=project, branch=branch))
+
     return {"project": project, "branch": branch, "events": grouped}
 
 
@@ -100,5 +103,7 @@ def commit(request):
     patches = [commit, ]
     comments = commit.get_comments()
     events = patches + comments
+
+    events.append(CommentBox(project=project, branch=branch, commit=commit))
 
     return {"project": project, "branch": branch, "commit": commit, "events": sorted(events)}

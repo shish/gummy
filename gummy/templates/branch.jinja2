@@ -2,7 +2,7 @@
 {% import "macros.jinja2" as macros %}
 
 {% block nav %}
-<ul>
+<ul class="breadcrumbs">
 	<li class="index"><a href="{{route_url("index")}}">Index</a></li>
 	<li class="project"><a href="{{route_url("project", project=project.name)}}">Project: {{project.name}}</a></li>
 	<li class="branch"><a href="{{route_url("branch", project=project.name, branch=branch.name)}}">Branch: {{branch.name}}</a></li>
@@ -11,5 +11,5 @@
 {% endblock %}
 
 {% block content %}
-{{ macros.eventlist(events, show_comment_box=True) }}
+{{ macros.eventlist(events) }}
 {% endblock %}

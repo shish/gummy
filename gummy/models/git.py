@@ -8,6 +8,7 @@ from .db import DBSession, Comment, Event
 class GitProject(Event):
     def __init__(self, workspace, name):
         self.type = "project"
+        self._comments = None
 
         self.workspace = workspace
         self.name = name
@@ -57,11 +58,13 @@ class GitProject(Event):
         return self.get_branches()[name]
 
     def get_comments(self):
-        return DBSession.query(Comment).filter(
-            Comment.project==self.name,
-            Comment.branch==None,
-            Comment.commit==None
-        ).all()
+        if not self._comments:
+            self._comments = DBSession.query(Comment).filter(
+                Comment.project==self.name,
+                Comment.branch==None,
+                Comment.commit==None
+            ).all()
+        return self._comments
 
     def __str__(self):
         return "%s: %s" % (self.name, self.description)
@@ -70,6 +73,7 @@ class GitProject(Event):
 class GitBranch(Event):
     def __init__(self, project, name, status):
         self.type = "branch"
+        self._comments = None
 
         self.project = project
         self.base = "master"
@@ -98,10 +102,12 @@ class GitBranch(Event):
 
     def get_comments(self, recurse=False):
         if recurse:
-            return DBSession.query(Comment).filter(
-                Comment.project==self.project.name,
-                Comment.branch==self.name
-            ).all()
+            if not self._comments:
+                self._comments = DBSession.query(Comment).filter(
+                    Comment.project==self.project.name,
+                    Comment.branch==self.name
+                ).all()
+            return self._comments
         else:
             return DBSession.query(Comment).filter(
                 Comment.project==self.project.name,
@@ -110,7 +116,7 @@ class GitBranch(Event):
             ).all()
 
     def get_participants(self):
-        return list(set([x.author for x in self.get_commits() + self.get_comments()]))
+        return list(set([x.author for x in self.get_commits() + self.get_comments(recurse=True)]))
 
     def __str__(self):
         return "%s %s " % (self.name, self.last_update)

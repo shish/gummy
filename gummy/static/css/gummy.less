@@ -26,13 +26,21 @@ NAV {
 	A:visited {
 		color: black;
 	}
-	UL {
+
+	UL.breadcrumbs {
 		background: #445;
 		height: 32px;
 		margin: 0px;
 		padding: 0px;
 		border-bottom: 2px solid black;
 	}
+	UL.user {
+		float: right;
+		height: 32px;
+		margin: 0px;
+		padding: 0px;
+	}
+
 	LI {
 		float: left;
 		padding-top: 6px;
@@ -71,6 +79,10 @@ NAV {
 		background-image: url("/static/img/from-commit.png");
 		background-position: left center;
 		background-repeat: no-repeat;
+	}
+
+	LI.login {
+		background-color: #889;
 	}
 }
 
@@ -133,6 +145,7 @@ ARTICLE {
 
 			.timestamp {
 				float: right;
+				color: gray;
 			}
 		}
 
