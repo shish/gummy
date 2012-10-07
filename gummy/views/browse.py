@@ -14,6 +14,7 @@ from ..models.db import (
     )
 from ..models.workspace import (
     Workspace,
+    CommitStreak,
     )
 
 
@@ -66,9 +67,22 @@ def branch(request):
 
     commits = branch.get_commits(squash)
     comments = branch.get_comments()
-    events = commits + comments
+    events = sorted(commits + comments)
 
-    return {"project": project, "branch": branch, "events": sorted(events)}
+    grouped = []
+    for c in events:
+        if not grouped:
+            grouped = [CommitStreak(c.branch, [c])]
+        elif grouped[-1].commits[0].author == c.author and grouped[-1].commits[0].type == "commit" and c.type == "commit":
+            grouped[-1].commits.append(c)
+        else:
+            grouped.append(CommitStreak(c.branch, [c]))
+
+    for n, g in enumerate(grouped):
+        if len(g.commits) == 1:
+            grouped[n] = g.commits[0]
+
+    return {"project": project, "branch": branch, "events": grouped}
 
 
 @view_config(route_name='commit', renderer='templates/commit.jinja2')

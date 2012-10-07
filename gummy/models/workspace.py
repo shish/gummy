@@ -27,3 +27,12 @@ class Workspace(Event):
         ).all()
 
 
+class CommitStreak(Event):
+    def __init__(self, branch, commits):
+        self.type = "commitstreak"
+
+        self.branch = branch
+        self.commits = commits
+        self.author = commits[0].author
+        self.timestamp = commits[-1].timestamp
+        self.key = commits[0].key

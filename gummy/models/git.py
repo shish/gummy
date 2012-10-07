@@ -87,22 +87,7 @@ class GitBranch(Event):
                 name = line.strip()
                 commits.append(GitCommit(self, name))
             commits.reverse()
-            #return commits
-
-            grouped = []
-            for c in commits:
-                if not grouped:
-                    grouped = [GitCommitStreak(self, [c])]
-                elif grouped[-1].commits[0].author == c.author:
-                    grouped[-1].commits.append(c)
-                else:
-                    grouped.append(GitCommitStreak(self, [c]))
-
-            for n, g in enumerate(grouped):
-                if len(g.commits) == 1:
-                    grouped[n] = g.commits[0]
-
-            return grouped
+            return commits
 
     def get_commit(self, name):
         return GitCommit(self, name)
@@ -120,6 +105,8 @@ class GitBranch(Event):
 
 class GitCommit(Event):
     def __init__(self, branch, name):
+        self.type = "commit"
+
         c = branch.project.repo[name]
         self.branch = branch
         self.name = name
@@ -149,17 +136,6 @@ class GitCommit(Event):
 
     def __str__(self):
         return self.name + " " + self.author
-
-
-class GitCommitStreak(Event):
-    def __init__(self, branch, commits):
-        self.type = "commitstreak"
-
-        self.branch = branch
-        self.commits = commits
-        self.author = commits[0].author
-        self.timestamp = commits[-1].timestamp
-        self.key = commits[0].key
 
 
 class GitCommitSquash(Event):
