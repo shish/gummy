@@ -1,3 +1,24 @@
+{% macro eventlist(events, show_comment_box=False) -%}
+	<ul class="eventlist">
+		{% for event in events %}
+			{% if event.type == "project" %}
+				{{ project(event) }}
+			{% elif event.type == "branch" %}
+				{{ branch(event) }}
+			{% elif event.type == "commitstreak" %}
+				{{ commitstreak(event) }}
+			{% elif event.type == "commit" %}
+				{{ commit(event) }}
+			{% elif event.type == "comment" %}
+				{{ comment(event) }}
+			{% endif %}
+		{% endfor %}
+		{% if show_comment_box %}
+			{{ commentbox(project.name, branch.name) }}
+		{% endif %}
+	</ul>
+{%- endmacro %}
+
 {% macro commentbox(project=None, branch=None, commit=None, file=None, line=None) -%}
 	<li class='comment'>
 		<form action="/comment" method="POST">
@@ -39,6 +60,110 @@
 		</div>
 		<div class="message">
 			{{comment.message|urlize}}
+		</div>
+	</li>
+{%- endmacro %}
+
+{% macro commit(event) -%}
+	<li class='commit'>
+		<div class="header">
+			<span class="icon">
+				{{avatar(event.author, 48)}}
+			</span>
+			<span class="title">
+				<a href="{{route_url("commit", project=event.branch.project.name, branch=event.branch.name, commit=event.name)}}">{{event.name[:8]}}</a>:
+			</span>
+			<span class="subtitle">
+				{{len(event.comments)}} comments
+			</span>
+			<span class="timestamp">
+				{{name(event.author)}} posted
+				<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+			</span>
+		</div>
+		<div class="message">
+			{{event.message}}
+		</div>
+		<div class="diff">
+			<div class="diff-content">
+				{{event.diff}}
+			</div>
+		</div>
+	</li>
+{%- endmacro %}
+
+{% macro project(event) -%}
+	<li class="project">
+		<div class="header">
+			<span class="title">
+				<a href="{{route_url("project", project=event.name)}}">{{event.name}}</a>
+			</span>
+			<span class="timestamp">
+				<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+			</span>
+		</div>
+		<div class="message">
+			{{event.description}}
+		</div>
+	</li>
+{%- endmacro %}
+
+{% macro branch(event) -%}
+	<li class="branch {{event.status}}">
+		<div class="header">
+			<span class="icon">
+				{{avatar(event.author, 48)}}
+			</span>
+			<span class="title">
+				<a href="{{route_url("branch", project=event.project.name, branch=event.name)}}">{{event.name}}</a>:
+			</span>
+			<span class="subtitle">
+				{% if len(event.get_commits()) > 0 %}
+					{{len(event.get_commits())}} commits,
+				{% else %}
+					merged,
+				{% endif %}
+				{{len(event.get_comments(recurse=True))}} comments
+			</span>
+			<span class="timestamp">
+				{{name(event.author)}} posted
+				<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+			</span>
+		</div>
+		<div class="message">
+			Last commit: {{event.message}}
+			<br>{{ len(event.get_participants()) }} participants: 
+			{% for p in event.get_participants() %}
+				{{ avatar(p, 14) }}
+			{% endfor %}
+		</div>
+	</li>
+{%- endmacro %}
+
+{% macro commitstreak(event) -%}
+	<li class='commitstreak'>
+		<div class="header">
+			<span class="icon">
+				{{avatar(event.author, 48)}}
+			</span>
+			<span class="title">
+				{{ len(event.commits) }} Commits
+			</span>
+			<span class="timestamp">
+				{{name(event.author)}} updated
+				<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+			</span>
+		</div>
+		<div class="message">
+		{% for c in event.commits %}
+			<div class="line">
+				<a href="{{route_url("commit", project=c.branch.project.name, branch=c.branch.name, commit=c.name)}}">{{c.name[:8]}}</a>:
+				{{c.message}}
+				<span class="timestamp">
+					<time datetime="{{c.timestamp.isoformat()}}">{{c.timestamp}}</time>
+				</span>
+			</div>
+		{% endfor %}
 		</div>
 	</li>
 {%- endmacro %}

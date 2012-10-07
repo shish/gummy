@@ -10,41 +10,5 @@
 {% endblock %}
 
 {% block content %}
-<ul class="eventlist">
-	{% for event in events %}
-		{% if event.type == "comment" %}
-			{{ macros.comment(event) }}
-		{% else %}
-			<li class="branch {{event.status}}">
-				<div class="header">
-					<span class="icon">
-						{{avatar(event.author, 48)}}
-					</span>
-					<span class="title">
-						<a href="{{route_url("branch", project=project.name, branch=event.name)}}">{{event.name}}</a>:
-					</span>
-					<span class="subtitle">
-						{% if len(event.get_commits()) > 0 %}
-							{{len(event.get_commits())}} commits,
-						{% else %}
-							merged,
-						{% endif %}
-						{{len(event.get_comments(recurse=True))}} comments
-					</span>
-					<span class="timestamp">
-						{{name(event.author)}} posted
-						<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
-					</span>
-				</div>
-				<div class="message">
-					Last commit: {{event.message}}
-					<br>{{ len(event.get_participants()) }} participants: 
-					{% for p in event.get_participants() %}
-						{{ avatar(p, 14) }}
-					{% endfor %}
-				</div>
-			</li>
-		{% endif %}
-	{% endfor %}
-</ul>
+{{ macros.eventlist(events) }}
 {% endblock %}

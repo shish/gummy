@@ -12,35 +12,5 @@
 {% endblock %}
 
 {% block content %}
-<ul class="eventlist">
-	{% for event in events %}
-		{% if event.type == "comment" %}
-			{{ macros.comment(event) }}
-		{% else %}
-			<li class='commit'>
-				<div class="header">
-					<span class="icon">
-						{{avatar(event.author, 48)}}
-					</span>
-					<span class="title">
-						Commit Details
-					</span>
-					<span class="timestamp">
-						{{name(event.author)}} posted
-						<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
-					</span>
-				</div>
-				<div class="message">
-					{{event.message}}
-				</div>
-				<div class="diff">
-					<div class="diff-content">
-						{{event.diff}}
-					</div>
-				</div>
-			</li>
-		{% endif %}
-	{% endfor %}
-	{{ macros.commentbox(project.name, branch.name, commit.name) }}
-</ul>
+{{ macros.eventlist(events, show_comment_box=True) }}
 {% endblock %}

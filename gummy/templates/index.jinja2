@@ -9,25 +9,5 @@
 {% endblock %}
 
 {% block content %}
-<ul class="eventlist">
-	{% for event in events %}
-		{% if event.type == "comment" %}
-			{{ macros.comment(event) }}
-		{% else %}
-			<li class="project">
-				<div class="header">
-					<span class="title">
-						<a href="{{route_url("project", project=event.name)}}">{{event.name}}</a>
-					</span>
-					<span class="timestamp">
-						<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
-					</span>
-				</div>
-				<div class="message">
-					{{event.description}}
-				</div>
-			</li>
-		{% endif %}
-	{% endfor %}
-</ul>
+{{ macros.eventlist(events) }}
 {% endblock %}

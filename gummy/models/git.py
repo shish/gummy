@@ -7,6 +7,8 @@ from .db import DBSession, Comment, Event
 
 class GitProject(Event):
     def __init__(self, workspace, name):
+        self.type = "project"
+
         self.workspace = workspace
         self.name = name
         self.key = self.name
@@ -67,6 +69,8 @@ class GitProject(Event):
 
 class GitBranch(Event):
     def __init__(self, project, name, status):
+        self.type = "branch"
+
         self.project = project
         self.base = "master"
         self.name = name

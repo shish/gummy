@@ -37,9 +37,9 @@ def config_templates(config):
     def add_renderer_globals(event):
         def simple_static_url(name):
             return event["request"].static_url('gummy:static/'+name)
-        event['static_url'] = simple_static_url
-        event['route_url'] = event["request"].route_url
-        event['route_path'] = event["request"].route_path
+        env.globals['static_url'] = simple_static_url
+        env.globals['route_url'] = event["request"].route_url
+        env.globals['route_path'] = event["request"].route_path
     config.add_subscriber(add_renderer_globals, 'pyramid.events.BeforeRender')
 
 
