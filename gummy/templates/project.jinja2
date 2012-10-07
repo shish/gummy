@@ -31,9 +31,6 @@
                         {% endif %}
 
                         {{len(event.get_comments())}} comments
-                        {% for c in event.get_comments() %}
-                            {{ avatar(c.author) }}
-                        {% endfor %}
 					</span>
 					<span class="timestamp">
 						{{name(event.author)}} posted
@@ -42,6 +39,10 @@
 				</div>
 				<div class="message">
 					Last commit: {{event.message}}
+					<br>{{ len(event.get_participants()) }} participants: 
+                    {% for p in event.get_participants() %}
+						{{ avatar(p, 14) }}
+					{% endfor %}
 				</div>
 			</li>
 		{% endif %}

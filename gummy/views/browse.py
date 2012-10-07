@@ -72,14 +72,19 @@ def branch(request):
     grouped = []
     for c in events:
         if not grouped:
-            grouped = [CommitStreak(c.branch, [c])]
+            cs = CommitStreak(c.branch)
+            cs.addCommit(c)
+            grouped = [cs, ]
         elif grouped[-1].commits[0].author == c.author and grouped[-1].commits[0].type == "commit" and c.type == "commit":
-            grouped[-1].commits.append(c)
+            grouped[-1].addCommit(c)
         else:
-            grouped.append(CommitStreak(c.branch, [c]))
+            cs = CommitStreak(c.branch)
+            cs.addCommit(c)
+            grouped.append(cs)
 
     for n, g in enumerate(grouped):
-        if len(g.commits) == 1:
+        #if len(g.commits) == 1:
+        if g.commits[0].type != "commit":
             grouped[n] = g.commits[0]
 
     return {"project": project, "branch": branch, "events": grouped}

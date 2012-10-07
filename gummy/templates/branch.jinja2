@@ -22,25 +22,23 @@
 						{{avatar(event.author, 48)}}
 					</span>
 					<span class="title">
-                        Multiple Commits
-					</span>
-					<span class="subtitle">
-						{{len(event.commits)}} commits
+						{{ len(event.commits) }} Commits
 					</span>
 					<span class="timestamp">
-						{{name(event.author)}} posted
+						{{name(event.author)}} updated
 						<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
 					</span>
 				</div>
 				<div class="message">
-                {% for commit in event.commits %}
-                    <br>
-                    <a href="{{route_url("commit", project=project.name, branch=branch.name, commit=commit.name)}}">{{commit.name[:8]}}</a>:
+				{% for commit in event.commits %}
+					<div class="line">
+					<a href="{{route_url("commit", project=project.name, branch=branch.name, commit=commit.name)}}">{{commit.name[:8]}}</a>:
 					{{commit.message}}
 					<span class="timestamp">
 						<time datetime="{{commit.timestamp.isoformat()}}">{{commit.timestamp}}</time>
 					</span>
-                {% endfor %}
+					</div>
+				{% endfor %}
 				</div>
 			</li>
 		{% else %}

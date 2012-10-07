@@ -98,7 +98,8 @@ ARTICLE {
 	.project, .branch, .commit, .comment {
 		border: 2px solid black;
 		border-radius: 8px;
-		margin-bottom: 32px;
+		margin-bottom: 24px;
+		margin-left: 56px;
 
 		DIV:first-child {
 			border-radius: 4px 4px 0px 0px;
@@ -114,6 +115,12 @@ ARTICLE {
 			.icon {
 				float: left;
 				margin-right: 4px;
+				margin-left: -56px;
+				margin-top: -2px;
+
+				.avatar {
+					border: 2px solid black;
+				}
 			}
 			.timestamp {
 				float: right;
@@ -199,7 +206,7 @@ FOOTER {
 		width: 100%;
 	}
 	TEXTAREA {
-		height: 150px;
+		height: 100px;
 		width: 100%;
 	}
 }

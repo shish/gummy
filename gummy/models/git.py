@@ -99,6 +99,8 @@ class GitBranch(Event):
             Comment.commit==None
         ).all()
 
+    def get_participants(self):
+        return list(set([x.author for x in self.get_commits() + self.get_comments()]))
     def __str__(self):
         return "%s %s " % (self.name, self.last_update)
 
