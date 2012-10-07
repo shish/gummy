@@ -24,23 +24,22 @@
 						<a href="{{route_url("branch", project=project.name, branch=event.name)}}">{{event.name}}</a>:
 					</span>
 					<span class="subtitle">
-                        {% if len(event.get_commits()) > 0 %}
-                            {{len(event.get_commits())}} commits,
-                        {% else %}
-                            merged,
-                        {% endif %}
-
-                        {{len(event.get_comments(recurse=True))}} comments
+						{% if len(event.get_commits()) > 0 %}
+							{{len(event.get_commits())}} commits,
+						{% else %}
+							merged,
+						{% endif %}
+						{{len(event.get_comments(recurse=True))}} comments
 					</span>
 					<span class="timestamp">
 						{{name(event.author)}} posted
-	                    <time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+						<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
 					</span>
 				</div>
 				<div class="message">
 					Last commit: {{event.message}}
 					<br>{{ len(event.get_participants()) }} participants: 
-                    {% for p in event.get_participants() %}
+					{% for p in event.get_participants() %}
 						{{ avatar(p, 14) }}
 					{% endfor %}
 				</div>
