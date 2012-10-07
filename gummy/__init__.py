@@ -59,6 +59,7 @@ def main(global_config, **settings):
     config.add_route('branch', '/p/{project}/b/{branch}')
     config.add_route('commit', '/p/{project}/b/{branch}/c/{commit}')
     config.add_route('comment', '/comment')
+    config.add_route('misc-pygments', '/misc/pygments.css')
 
     config.scan()
     return config.make_wsgi_app()

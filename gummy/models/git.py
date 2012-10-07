@@ -92,15 +92,22 @@ class GitBranch(Event):
     def get_commit(self, name):
         return GitCommit(self, name)
 
-    def get_comments(self):
-        return DBSession.query(Comment).filter(
-            Comment.project==self.project.name,
-            Comment.branch==self.name,
-            Comment.commit==None
-        ).all()
+    def get_comments(self, recurse=False):
+        if recurse:
+            return DBSession.query(Comment).filter(
+                Comment.project==self.project.name,
+                Comment.branch==self.name
+            ).all()
+        else:
+            return DBSession.query(Comment).filter(
+                Comment.project==self.project.name,
+                Comment.branch==self.name,
+                Comment.commit==None
+            ).all()
 
     def get_participants(self):
         return list(set([x.author for x in self.get_commits() + self.get_comments()]))
+
     def __str__(self):
         return "%s %s " % (self.name, self.last_update)
 
@@ -122,8 +129,15 @@ class GitCommit(Event):
     @property
     def diff(self):
         cmd = "cd %s && git diff %s^1..%s" % (self.branch.project.root, self.name, self.name)
-        self.diff = Popen(cmd, shell=True, stdout=PIPE).stdout.read()
-        self.diff = self.diff.decode("utf8", "ignore")
+        diff = Popen(cmd, shell=True, stdout=PIPE).stdout.read()
+        diff = diff.decode("utf8", "ignore")
+
+        from pygments import highlight
+        from pygments.lexers import DiffLexer
+        from pygments.formatters import HtmlFormatter
+        from jinja2 import Markup
+
+        return Markup(highlight(diff, DiffLexer(), HtmlFormatter()))
 
 
     def get_patches(self):

@@ -30,7 +30,7 @@
                             merged,
                         {% endif %}
 
-                        {{len(event.get_comments())}} comments
+                        {{len(event.get_comments(recurse=True))}} comments
 					</span>
 					<span class="timestamp">
 						{{name(event.author)}} posted
