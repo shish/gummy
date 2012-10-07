@@ -17,13 +17,21 @@ def config_templates(config):
     # global globals
     env = config.get_jinja2_environment()
     def avatar(email, size=20):
-        m = re.match(".* <(.*)>", email)
+        m = re.match("(.*) <(.*)>", email)
         if m:
-            email = m.group(1)
+            email = m.group(2)
         h = hashlib.md5(email).hexdigest()
         return Markup('<img class="avatar" width="%d" height="%d" src="https://secure.gravatar.com/avatar/%s?s=%d">' % (size, size, h, size))
+
+    def name(author):
+        m = re.match("(.*) <(.*)>", author)
+        if m:
+            author = m.group(1)
+        return author
+
     env.globals['len'] = len
     env.globals['avatar'] = avatar
+    env.globals['name'] = name
 
     # per-request globals
     def add_renderer_globals(event):

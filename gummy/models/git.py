@@ -75,7 +75,7 @@ class GitBranch(Event):
         self.timestamp = datetime.fromtimestamp(c.commit_time)
         self.status = status
         self.author = c.author
-        self.key = (1 if self.status == "merged" else 0), self.timestamp
+        self.key = (0 if self.status == "merged" else 1), self.timestamp
 
     def get_commits(self, squash=False):
         if squash:
@@ -87,7 +87,22 @@ class GitBranch(Event):
                 name = line.strip()
                 commits.append(GitCommit(self, name))
             commits.reverse()
-            return commits
+            #return commits
+
+            grouped = []
+            for c in commits:
+                if not grouped:
+                    grouped = [GitCommitStreak(self, [c])]
+                elif grouped[-1].commits[0].author == c.author:
+                    grouped[-1].commits.append(c)
+                else:
+                    grouped.append(GitCommitStreak(self, [c]))
+
+            for n, g in enumerate(grouped):
+                if len(g.commits) == 1:
+                    grouped[n] = g.commits[0]
+
+            return grouped
 
     def get_commit(self, name):
         return GitCommit(self, name)
@@ -134,6 +149,17 @@ class GitCommit(Event):
 
     def __str__(self):
         return self.name + " " + self.author
+
+
+class GitCommitStreak(Event):
+    def __init__(self, branch, commits):
+        self.type = "commitstreak"
+
+        self.branch = branch
+        self.commits = commits
+        self.author = commits[0].author
+        self.timestamp = commits[-1].timestamp
+        self.key = commits[0].key
 
 
 class GitCommitSquash(Event):

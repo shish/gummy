@@ -12,10 +12,6 @@ A {
 	border: 1px solid black;
 	border-radius: 4px;
 }
-.header .icon {
-	float: left;
-	margin-right: 4px;
-}
 
 NAV {
 	position: fixed;
@@ -115,10 +111,11 @@ ARTICLE {
 			border-bottom: 1px solid gray;
 			padding: 4px;
 
-			.hash {
-				float: right;
+			.icon {
+				float: left;
+				margin-right: 4px;
 			}
-			TIME {
+			.timestamp {
 				float: right;
 			}
 		}
@@ -126,6 +123,10 @@ ARTICLE {
 		.message {
 			padding: 4px;
 			font-family: monospace;
+
+			.timestamp {
+				float: right;
+			}
 		}
 
 		.diff {

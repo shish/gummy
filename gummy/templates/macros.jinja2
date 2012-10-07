@@ -22,15 +22,20 @@
 {% macro comment(comment) -%}
 	<li class='comment'>
 		<div class="header">
-			<span class="icon">{{avatar(comment.author, 48)}}</span>
+			<span class="icon">
+				{{avatar(comment.author, 48)}}
+			</span>
 
 			{% if comment.file %}
 				<span class="hash">{{comment.file}}:{{comment.line}}</span>
 			{% endif %}
-			<span class="author">
+			<span class="title">
 				{{comment.author}}
 			</span>
-			<time datetime="{{comment.timestamp.isoformat()}}">{{comment.timestamp}}</time>
+			<span class="timestamp">
+				{{name(comment.author)}} posted
+				<time datetime="{{comment.timestamp.isoformat()}}">{{comment.timestamp}}</time>
+			</span>
 		</div>
 		<div class="message">
 			{{comment.message|urlize}}

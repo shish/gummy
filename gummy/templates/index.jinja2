@@ -16,10 +16,12 @@
 		{% else %}
 			<li class="project">
 				<div class="header">
-					<span class="author">
+					<span class="title">
 						<a href="{{route_url("project", project=event.name)}}">{{event.name}}</a>
 					</span>
-                    <time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+					<span class="timestamp">
+	                    <time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+					</span>
 				</div>
 				<div class="message">
 					{{event.description}}

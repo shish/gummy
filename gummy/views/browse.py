@@ -45,7 +45,10 @@ def project(request):
     branches = project.get_branches()
     events = comments + branches.values()
 
-    return {"project": project, "events": sorted(events)}
+    events = sorted(events)
+    events.reverse()
+
+    return {"project": project, "events": events}
 
 
 @view_config(route_name='branch', renderer='templates/branch.jinja2')

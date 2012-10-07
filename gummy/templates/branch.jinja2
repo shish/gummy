@@ -15,18 +15,50 @@
 	{% for event in events %}
 		{% if event.type == "comment" %}
 			{{ macros.comment(event) }}
+		{% elif event.type == "commitstreak" %}
+			<li class='commit'>
+				<div class="header">
+					<span class="icon">
+						{{avatar(event.author, 48)}}
+					</span>
+					<span class="title">
+                        Multiple Commits
+					</span>
+					<span class="subtitle">
+						{{len(event.commits)}} commits
+					</span>
+					<span class="timestamp">
+						{{name(event.author)}} posted
+						<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+					</span>
+				</div>
+				<div class="message">
+                {% for commit in event.commits %}
+                    <br>
+                    <a href="{{route_url("commit", project=project.name, branch=branch.name, commit=commit.name)}}">{{commit.name[:8]}}</a>:
+					{{commit.message}}
+					<span class="timestamp">
+						<time datetime="{{commit.timestamp.isoformat()}}">{{commit.timestamp}}</time>
+					</span>
+                {% endfor %}
+				</div>
+			</li>
 		{% else %}
 			<li class='commit'>
 				<div class="header">
-					<span class="icon">{{avatar(event.author, 48)}}</span>
-
-					<span class="author">
+					<span class="icon">
+						{{avatar(event.author, 48)}}
+					</span>
+					<span class="title">
 						<a href="{{route_url("commit", project=project.name, branch=branch.name, commit=event.name)}}">{{event.name[:8]}}</a>:
 					</span>
-
-					{{len(event.comments)}} comments
-
-					<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+					<span class="subtitle">
+						{{len(event.comments)}} comments
+					</span>
+					<span class="timestamp">
+						{{name(event.author)}} posted
+						<time datetime="{{event.timestamp.isoformat()}}">{{event.timestamp}}</time>
+					</span>
 				</div>
 				<div class="message">
 					{{event.message}}
