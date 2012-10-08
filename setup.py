@@ -15,9 +15,11 @@ requires = [
     'pyramid_jinja2',
     'zope.sqlalchemy',
     'waitress',
+    'dulwich',
+    # testing
     'nose',
     'coverage',
-    'dulwich',
+    'pep8',
     ]
 
 setup(name='gummy',
