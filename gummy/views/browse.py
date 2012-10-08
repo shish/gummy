@@ -20,7 +20,7 @@ from ..models.workspace import (
 
 
 appconf = {
-    "project_root": "/home/shish/workspace/",
+    "project_root": os.path.expanduser("~/workspace/"),
 }
 
 

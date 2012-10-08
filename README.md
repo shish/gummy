@@ -8,11 +8,8 @@ A UI for keeping track of unmerged branches
 Getting Started
 ---------------
 
-- cd <directory containing this file>
+- symlink your git repositories so they're visible at ~/workspace
 
-- $venv/bin/python setup.py develop
+- "make run"
 
-- $venv/bin/initialize_gummy_db development.ini
-
-- $venv/bin/pserve development.ini
 
