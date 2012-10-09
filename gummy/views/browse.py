@@ -1,22 +1,8 @@
-from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
 
-import transaction
-
-from sqlalchemy.exc import DBAPIError
-from subprocess import Popen, PIPE
 import os
 
-from ..models.db import (
-    DBSession,
-    Comment
-    )
-from ..models.workspace import (
-    Workspace,
-    CommitStreak,
-    CommentBox,
-    )
+from ..models.workspace import Workspace, CommitStreak, CommentBox
 
 
 appconf = {

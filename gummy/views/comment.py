@@ -1,21 +1,14 @@
-from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import transaction
 
-from sqlalchemy.exc import DBAPIError
-from subprocess import Popen, PIPE
-import os
+#from sqlalchemy.exc import DBAPIError
 import datetime
 
-from ..models.db import (
-    DBSession,
-    Comment
-    )
-from ..models.workspace import (
-    Workspace,
-    )
+from ..models.db import DBSession, Comment
+#from ..models.workspace import Workspace
+
 
 @view_config(route_name='comment', request_method="POST")
 def add_comment(request):

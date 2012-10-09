@@ -155,7 +155,6 @@ class GitCommit(Event):
 
         return Markup(highlight(diff, DiffLexer(), HtmlFormatter()))
 
-
     def get_patches(self):
         return []
 
