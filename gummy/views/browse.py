@@ -54,7 +54,7 @@ def branch(request):
     comments = branch.get_comments()
     events = commits + comments
 
-    events.sort(cmp=lambda x, y: cmp(x.key, y.key), reverse=True)
+    events.sort(cmp=lambda x, y: cmp(x.key, y.key))
 
     grouped = []
     for c in events:
@@ -92,6 +92,6 @@ def commit(request):
 
     events.append(CommentBox(project=project, branch=branch, commit=commit))
 
-    events.sort(cmp=lambda x, y: cmp(x.key, y.key), reverse=True)
+    events.sort(cmp=lambda x, y: cmp(x.key, y.key))
 
     return {"project": project, "branch": branch, "commit": commit, "events": events}
