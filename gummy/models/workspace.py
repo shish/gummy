@@ -52,3 +52,5 @@ class CommentBox(Event):
         self.commit = commit
         self.file = file
         self.line = line
+
+        self.key = "zzz"
