@@ -18,10 +18,7 @@ def _keysort(x, y):
 def index(request):
     workspace = Workspace(appconf.get("project_root"))
 
-    comments = workspace.get_comments()
-    projects = workspace.get_projects()
-    events = comments + projects.values()
-
+    events = workspace.get_projects().values()
     events.sort(cmp=_keysort, reverse=True)
 
     return {'events': events}
@@ -32,10 +29,7 @@ def project(request):
     workspace = Workspace(appconf.get("project_root"))
     project = workspace.get_project(request.matchdict["project"])
 
-    comments = project.get_comments()
-    branches = project.get_branches()
-    events = comments + branches.values()
-
+    events = project.get_branches().values()
     events.sort(cmp=_keysort, reverse=True)
 
     return {"project": project, "events": events}
@@ -46,11 +40,6 @@ def branch(request):
     workspace = Workspace(appconf.get("project_root"))
     project = workspace.get_project(request.matchdict["project"])
     branch = project.get_branch(request.matchdict["branch"])
-
-    #try:
-    #    one = DBSession.query(MyModel).filter(MyModel.name=='one').first()
-    #except DBAPIError:
-    #    return Response(conn_err_msg, content_type='text/plain', status_int=500)
 
     squash = request.GET.get("squash", "off") == "on"
 
