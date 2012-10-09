@@ -44,7 +44,7 @@ def branch(request):
     squash = request.GET.get("squash", "off") == "on"
 
     commits = branch.get_commits(squash)
-    comments = branch.get_comments()
+    comments = branch.get_comments(True)
     events = commits + comments
 
     events.sort(cmp=_keysort)

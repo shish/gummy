@@ -158,7 +158,7 @@ class GitCommit(Event):
         if self.name in self.branch.project._notes_tree:
             _note_mode, note_sha = self.branch.project._notes_tree[self.name]
             note_data = str(self.branch.project.repo[note_sha])
-            return [Comment.from_pairs(d) for d in note_data.split("\n\n") if d.strip() != ""]
+            return [Comment.from_pairs(self, d) for d in note_data.split("\n\n") if d.strip() != ""]
         else:
             return []
     

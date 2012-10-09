@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-import json
+import uuid
 
 from .db import DBSession
 
@@ -44,8 +44,13 @@ class Workspace(Event):
 
 
 class Comment(Event):
-    def __init__(self, author, message, project=None, branch=None, commit=None, file=None, line=None, timestamp=None):
+    def __init__(self, author, message, id=None, project=None, branch=None, commit=None, file=None, line=None, timestamp=None):
         Event.__init__(self, "comment")
+
+        if id:
+            self.id = id
+        else:
+            self.id = uuid.uuid1()
 
         self.project = project
         self.branch = branch
@@ -67,8 +72,12 @@ class Comment(Event):
         self.key = self.timestamp
     
     @classmethod
-    def from_pairs(cls, data):
-        args = {}
+    def from_pairs(cls, commit, data):
+        args = {
+            "project": commit.branch.project,
+            "branch": commit.branch,
+            "commit": commit,
+        }
         for line in data.split("\n"):
             try:
                 k, v = line.split(": ", 2)
@@ -79,7 +88,7 @@ class Comment(Event):
 
     def to_pairs(self):
         ps = []
-        for k in ["author", "message", "timestamp"]:
+        for k in ["id", "author", "message", "timestamp"]:
             ps.append("%s: %s" % (k.title(), getattr(self, k)))
         return "\n".join(ps)
 

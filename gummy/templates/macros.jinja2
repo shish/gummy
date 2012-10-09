@@ -55,7 +55,14 @@
 				<span class="hash">{{comment.file}}:{{comment.line}}</span>
 			{% endif %}
 			<span class="title">
-				{{name(comment.author)}} added a comment:
+				{{name(comment.author)}} added a comment
+				{% if comment.commit %}
+					on <a href="{{route_url("commit", project=comment.project.name, branch=comment.branch.name, commit=comment.commit.name)}}">{{comment.commit.name[:8]}}</a>
+				{% elif comment.branch %}
+					<!-- 
+					on <a href="{{route_url("branch", project=comment.project.name, branch=comment.branch.name)}}">{{comment.branch.name}}</a>
+					-->
+				{% endif%}
 			</span>
 			<span class="timestamp">
 				posted

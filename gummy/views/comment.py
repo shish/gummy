@@ -3,6 +3,7 @@ from pyramid.httpexceptions import HTTPFound
 
 import datetime
 import os
+import uuid
 
 from ..models.workspace import Workspace, Comment
 
@@ -12,9 +13,14 @@ def add_comment(request):
     w = Workspace(os.path.expanduser("~/workspace/"))
     p = w.get_project(request.POST.get("project"))
     b = p.get_branch(request.POST.get("branch"))
-    c = b.get_commit(request.POST.get("commit"))
+    if request.POST.get("commit"):
+        target = b.get_commit(request.POST.get("commit"))
+    else:
+        #target = b  # comment on the branch itself
+        target = b.get_commits()[-1]  # most recent commit
     
-    c.add_comment(Comment(
+    target.add_comment(Comment(
+        id = request.POST.get("id") or None,
         author = request.POST.get("author"),
         message = request.POST.get("message"),
         project = request.POST.get("project"),
