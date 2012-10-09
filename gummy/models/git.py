@@ -13,6 +13,9 @@ def nometa(text):
 
 class GitProject(Event):
     def __init__(self, workspace, name):
+        self.type = "project"
+        self._comments = None
+
         self.workspace = workspace
         self.name = name
         self.key = self.name
@@ -21,6 +24,9 @@ class GitProject(Event):
             self.root = os.path.join(workspace.root, name, ".git")
         elif os.path.exists(os.path.join(workspace.root, name, "HEAD")):
             self.root = os.path.join(workspace.root, name)
+
+        self.timestamp = datetime.fromtimestamp(os.path.getmtime(self.root))
+        self.key = self.timestamp
 
         from dulwich.repo import Repo
         self.repo = Repo(self.root)
@@ -58,11 +64,13 @@ class GitProject(Event):
         return self.get_branches()[name]
 
     def get_comments(self):
-        return DBSession.query(Comment).filter(
-            Comment.project==self.name,
-            Comment.branch==None,
-            Comment.commit==None
-        ).all()
+        if not self._comments:
+            self._comments = DBSession.query(Comment).filter(
+                Comment.project==self.name,
+                Comment.branch==None,
+                Comment.commit==None
+            ).all()
+        return self._comments
 
     def __str__(self):
         return "%s: %s" % (self.name, self.description)
@@ -70,14 +78,18 @@ class GitProject(Event):
 
 class GitBranch(Event):
     def __init__(self, project, name, status):
+        self.type = "branch"
+        self._comments = None
+
         self.project = project
         self.base = "master"
         self.name = name
         c = project.repo[project.repo.ref("refs/heads/"+name)]
         self.message = nometa(c.message)
-        self.last_update = datetime.fromtimestamp(c.commit_time)
+        self.timestamp = datetime.fromtimestamp(c.commit_time)
         self.status = status
-        self.key = (1 if self.status == "merged" else 0), self.last_update
+        self.author = c.author
+        self.key = (0 if self.status == "merged" else 1), self.timestamp
 
     def get_commits(self, squash=False):
         if squash:
@@ -94,12 +106,23 @@ class GitBranch(Event):
     def get_commit(self, name):
         return GitCommit(self, name)
 
-    def get_comments(self):
-        return DBSession.query(Comment).filter(
-            Comment.project==self.project.name,
-            Comment.branch==self.name,
-            Comment.commit==None
-        ).all()
+    def get_comments(self, recurse=False):
+        if recurse:
+            if not self._comments:
+                self._comments = DBSession.query(Comment).filter(
+                    Comment.project==self.project.name,
+                    Comment.branch==self.name
+                ).all()
+            return self._comments
+        else:
+            return DBSession.query(Comment).filter(
+                Comment.project==self.project.name,
+                Comment.branch==self.name,
+                Comment.commit==None
+            ).all()
+
+    def get_participants(self):
+        return list(set([x.author for x in self.get_commits() + self.get_comments(recurse=True)]))
 
     def __str__(self):
         return "%s %s " % (self.name, self.last_update)
@@ -107,6 +130,8 @@ class GitBranch(Event):
 
 class GitCommit(Event):
     def __init__(self, branch, name):
+        self.type = "commit"
+
         c = branch.project.repo[name]
         self.branch = branch
         self.name = name
@@ -114,14 +139,21 @@ class GitCommit(Event):
         self.author_time = c.author_time
         self.committer = c.committer
         self.message = nometa(c.message)
-        self.datetime = datetime.fromtimestamp(c.author_time)
-        self.key = self.datetime
+        self.timestamp = datetime.fromtimestamp(c.author_time)
+        self.key = self.timestamp
 
     @property
     def diff(self):
         cmd = "cd %s && git diff %s^1..%s" % (self.branch.project.root, self.name, self.name)
-        self.diff = Popen(cmd, shell=True, stdout=PIPE).stdout.read()
-        self.diff = self.diff.decode("utf8", "ignore")
+        diff = Popen(cmd, shell=True, stdout=PIPE).stdout.read()
+        diff = diff.decode("utf8", "ignore")
+
+        from pygments import highlight
+        from pygments.lexers import DiffLexer
+        from pygments.formatters import HtmlFormatter
+        from jinja2 import Markup
+
+        return Markup(highlight(diff, DiffLexer(), HtmlFormatter()))
 
 
     def get_patches(self):

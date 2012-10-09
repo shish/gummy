@@ -5,6 +5,13 @@
 BODY {
 	background: #ABC;
 }
+A {
+	text-decoration: none;
+}
+.avatar {
+	border: 1px solid black;
+	border-radius: 4px;
+}
 
 NAV {
 	position: fixed;
@@ -14,19 +21,26 @@ NAV {
 	font-weight: bold;
 
 	A {
-		text-decoration: none;
 		color: black;
 	}
 	A:visited {
 		color: black;
 	}
-	UL {
+
+	UL.breadcrumbs {
 		background: #445;
 		height: 32px;
 		margin: 0px;
 		padding: 0px;
 		border-bottom: 2px solid black;
 	}
+	UL.user {
+		float: right;
+		height: 32px;
+		margin: 0px;
+		padding: 0px;
+	}
+
 	LI {
 		float: left;
 		padding-top: 6px;
@@ -66,6 +80,10 @@ NAV {
 		background-position: left center;
 		background-repeat: no-repeat;
 	}
+
+	LI.login {
+		background-color: #889;
+	}
 }
 
 
@@ -78,6 +96,8 @@ HEADER {
 
 ARTICLE {
 	margin-top: 64px;
+	margin-left: 32px;
+	margin-right: 32px;
 
 	.eventlist {
 		list-style: none;
@@ -87,10 +107,11 @@ ARTICLE {
 		padding-left: 64px;
 	}
 
-	.project, .branch, .commit, .comment {
+	.project, .branch, .commitstreak, .commit, .comment {
 		border: 2px solid black;
 		border-radius: 8px;
-		margin: 32px;
+		margin-bottom: 24px;
+		margin-left: 56px;
 
 		DIV:first-child {
 			border-radius: 4px 4px 0px 0px;
@@ -103,7 +124,17 @@ ARTICLE {
 			border-bottom: 1px solid gray;
 			padding: 4px;
 
-			.hash {
+			.icon {
+				float: left;
+				margin-right: 4px;
+				margin-left: -56px;
+				margin-top: -2px;
+
+				.avatar {
+					border: 2px solid black;
+				}
+			}
+			.timestamp {
 				float: right;
 			}
 		}
@@ -111,6 +142,11 @@ ARTICLE {
 		.message {
 			padding: 4px;
 			font-family: monospace;
+
+			.timestamp {
+				float: right;
+				color: gray;
+			}
 		}
 
 		.diff {
@@ -135,7 +171,7 @@ ARTICLE {
 		}
 	}
 
-	.project, .branch, .commit {
+	.project, .branch, .commitstreak, .commit {
 		.header {background: #AAB;}
 		.message {background: #CCD;}
 		.diff {background: #889;}
@@ -183,7 +219,7 @@ FOOTER {
 		width: 100%;
 	}
 	TEXTAREA {
-		height: 150px;
+		height: 100px;
 		width: 100%;
 	}
 }

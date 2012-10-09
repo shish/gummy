@@ -2,30 +2,12 @@
 {% import "macros.jinja2" as macros %}
 
 {% block nav %}
-<ul>
+<ul class="breadcrumbs">
 	<li class="index"><a href="{{route_url("index")}}">Index</a></li>
 	<li class="end">&nbsp;</li>
 </ul>
 {% endblock %}
 
 {% block content %}
-<ul class="eventlist">
-	{% for event in events %}
-		{% if event.type == "comment" %}
-			{{ macros.comment(event) }}
-		{% else %}
-			<li class="project">
-				<div class="header">
-					<div class="author">
-						<a href="{{route_url("project", project=event.name)}}">{{event.name}}</a>
-					</div>
-				</div>
-				<div class="message">
-					{{event.description}}
-				</div>
-			</li>
-		{% endif %}
-	{% endfor %}
-	{{ macros.commentbox() }}
-</ul>
+{{ macros.eventlist(events) }}
 {% endblock %}

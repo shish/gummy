@@ -2,7 +2,7 @@
 {% import "macros.jinja2" as macros %}
 
 {% block nav %}
-<ul>
+<ul class="breadcrumbs">
 	<li class="index"><a href="{{route_url("index")}}">Index</a></li>
 	<li class="project"><a href="{{route_url("project", project=project.name)}}">Project: {{project.name}}</a></li>
 	<li class="branch"><a href="{{route_url("branch", project=project.name, branch=branch.name)}}">Branch: {{branch.name}}</a></li>
@@ -11,45 +11,5 @@
 {% endblock %}
 
 {% block content %}
-<ul class="eventlist">
-	{% for event in events %}
-		{% if event.type == "comment" %}
-			{{ macros.comment(event) }}
-		{% else %}
-			<li class='commit'>
-				<div class="header">
-					<span class="hash">
-						{{len(event.get_comments())}} comments -
-						<a href="{{route_url("commit", project=project.name, branch=branch.name, commit=event.name)}}">{{event.name}}</a>
-					</span>
-					<span class="author">
-                        {{event.author}}
-                        {{event.datetime}}
-                    </span>
-				</div>
-				<div class="message">
-					{{event.message}}
-				</div>
-                {% if request.GET.get("squash") == "on" %}
-				<div class="diff">
-					<div class="diff-toggle">
-						Toggle Diff Content
-					</div>
-					<div class="diff-content">
-						<pre>{{event.diff}}</pre>
-					</div>
-				</div>
-                {% endif %}
-			</li>
-			{% if len(event.get_comments()) != 0 %}
-			<div class="subcomments">
-				{% for comment in event.get_comments() %}
-					{{ macros.comment(comment) }}
-				{% endfor %}
-			</div>
-			{% endif %}
-		{% endif %}
-	{% endfor %}
-	{{ macros.commentbox(project.name, branch.name) }}
-</ul>
+{{ macros.eventlist(events) }}
 {% endblock %}

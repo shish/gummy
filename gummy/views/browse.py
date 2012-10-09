@@ -14,6 +14,8 @@ from ..models.db import (
     )
 from ..models.workspace import (
     Workspace,
+    CommitStreak,
+    CommentBox,
     )
 
 
@@ -30,6 +32,9 @@ def index(request):
     projects = workspace.get_projects()
     events = comments + projects.values()
 
+    events = sorted(events)
+    events.reverse()
+
     return {'events': events}
 
 
@@ -42,7 +47,10 @@ def project(request):
     branches = project.get_branches()
     events = comments + branches.values()
 
-    return {"project": project, "events": sorted(events)}
+    events = sorted(events)
+    events.reverse()
+
+    return {"project": project, "events": events}
 
 
 @view_config(route_name='branch', renderer='templates/branch.jinja2')
@@ -60,9 +68,29 @@ def branch(request):
 
     commits = branch.get_commits(squash)
     comments = branch.get_comments()
-    events = commits + comments
+    events = sorted(commits + comments)
 
-    return {"project": project, "branch": branch, "events": sorted(events)}
+    grouped = []
+    for c in events:
+        if not grouped:
+            cs = CommitStreak(c.branch)
+            cs.addCommit(c)
+            grouped = [cs, ]
+        elif grouped[-1].commits[0].author == c.author and grouped[-1].commits[0].type == "commit" and c.type == "commit":
+            grouped[-1].addCommit(c)
+        else:
+            cs = CommitStreak(c.branch)
+            cs.addCommit(c)
+            grouped.append(cs)
+
+    for n, g in enumerate(grouped):
+        #if len(g.commits) == 1:
+        if g.commits[0].type != "commit":
+            grouped[n] = g.commits[0]
+
+    grouped.append(CommentBox(project=project, branch=branch))
+
+    return {"project": project, "branch": branch, "events": grouped}
 
 
 @view_config(route_name='commit', renderer='templates/commit.jinja2')
@@ -75,5 +103,7 @@ def commit(request):
     patches = [commit, ]
     comments = commit.get_comments()
     events = patches + comments
+
+    events.append(CommentBox(project=project, branch=branch, commit=commit))
 
     return {"project": project, "branch": branch, "commit": commit, "events": sorted(events)}

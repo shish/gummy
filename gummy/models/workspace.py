@@ -27,3 +27,28 @@ class Workspace(Event):
         ).all()
 
 
+class CommitStreak(Event):
+    def __init__(self, branch):
+        self.type = "commitstreak"
+
+        self.branch = branch
+        self.commits = []
+
+    def addCommit(self, commit):
+        self.commits.append(commit)
+        self.timestamp = commit.timestamp
+        self.author = commit.author
+        self.key = commit.key
+
+
+class CommentBox(Event):
+    def __init__(self, project=None, branch=None, commit=None, file=None, line=None, author=None):
+        self.type = "commentbox"
+
+        self.author = author
+
+        self.project = project
+        self.branch = branch
+        self.commit = commit
+        self.file = file
+        self.line = line
