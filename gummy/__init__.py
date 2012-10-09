@@ -21,7 +21,7 @@ def config_templates(config):
         if m:
             email = m.group(2)
         h = hashlib.md5(email).hexdigest()
-        return Markup('<img class="avatar" width="%d" height="%d" src="https://secure.gravatar.com/avatar/%s?s=%d">' % (size, size, h, size))
+        return Markup('<img class="avatar" width="%d" height="%d" src="https://secure.gravatar.com/avatar/%s?s=%d&d=retro">' % (size, size, h, size))
 
     def name(author):
         m = re.match("(.*) <(.*)>", author)
