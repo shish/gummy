@@ -4,10 +4,7 @@ import hashlib
 import re
 from jinja2 import Markup
 
-from .models.db import (
-    DBSession,
-    Base,
-    )
+from .models.db import DBSession, Base
 
 
 def config_templates(config):
@@ -16,6 +13,7 @@ def config_templates(config):
 
     # global globals
     env = config.get_jinja2_environment()
+
     def avatar(email, size=20):
         m = re.match("(.*) <(.*)>", email)
         if m:
@@ -63,4 +61,3 @@ def main(global_config, **settings):
 
     config.scan()
     return config.make_wsgi_app()
-
