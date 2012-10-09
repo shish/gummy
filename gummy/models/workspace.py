@@ -109,7 +109,7 @@ class CommitStreak(Event):
 
 class CommentBox(Event):
     def __init__(self, project=None, branch=None, commit=None, file=None, line=None, author=None):
-        self.type = "commentbox"
+        Event.__init__(self, "commentbox")
 
         self.author = author
 
@@ -120,3 +120,13 @@ class CommentBox(Event):
         self.line = line
 
         self.key = "zzz"
+
+
+class StatusBox(Event):
+    def __init__(self, reviewed, verified):
+        Event.__init__(self, "statusbox")
+        
+        self.reviewed = reviewed
+        self.verified = verified
+
+        self.key = "yyy"

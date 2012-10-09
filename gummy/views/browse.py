@@ -2,7 +2,7 @@ from pyramid.view import view_config
 
 import os
 
-from ..models.workspace import Workspace, CommitStreak, CommentBox
+from ..models.workspace import Workspace, CommitStreak, CommentBox, StatusBox
 
 
 appconf = {
@@ -67,6 +67,7 @@ def branch(request):
         if g.commits[0].type != "commit":
             grouped[n] = g.commits[0]
 
+    grouped.append(StatusBox(0, 0))
     grouped.append(CommentBox(project=project, branch=branch))
 
     return {"project": project, "branch": branch, "events": grouped}

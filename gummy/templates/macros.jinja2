@@ -11,6 +11,8 @@
 				{{ render_commit(event) }}
 			{% elif event.type == "comment" %}
 				{{ render_comment(event) }}
+			{% elif event.type == "statusbox" %}
+				{{ render_statusbox(event) }}
 			{% elif event.type == "commentbox" %}
 				{{ render_commentbox(event) }}
 			{% endif %}
@@ -175,6 +177,23 @@
 				</span>
 			</div>
 		{% endfor %}
+		</div>
+	</li>
+{%- endmacro %}
+
+{% macro render_statusbox(sb) -%}
+	<li class='status'>
+		<div class="header">
+			<span class="icon">
+			    {{avatar("shish+gummy@shishnet.org", 48)}}
+			</span>
+			<span class="title">
+				Current review status:
+			</span>
+		</div>
+		<div class="message">
+			    Verify Score: {{ sb.verified }}
+			<br>Review Score: {{ sb.reviewed }}
 		</div>
 	</li>
 {%- endmacro %}
