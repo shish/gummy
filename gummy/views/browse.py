@@ -10,6 +10,10 @@ appconf = {
 }
 
 
+def _keysort(x, y):
+    return cmp(str(x.key), str(y.key))
+
+
 @view_config(route_name='index', renderer='templates/index.jinja2')
 def index(request):
     workspace = Workspace(appconf.get("project_root"))
@@ -18,7 +22,7 @@ def index(request):
     projects = workspace.get_projects()
     events = comments + projects.values()
 
-    events.sort(cmp=lambda x, y: cmp(x.key, y.key), reverse=True)
+    events.sort(cmp=_keysort, reverse=True)
 
     return {'events': events}
 
@@ -32,7 +36,7 @@ def project(request):
     branches = project.get_branches()
     events = comments + branches.values()
 
-    events.sort(cmp=lambda x, y: cmp(x.key, y.key), reverse=True)
+    events.sort(cmp=_keysort, reverse=True)
 
     return {"project": project, "events": events}
 
@@ -54,7 +58,7 @@ def branch(request):
     comments = branch.get_comments()
     events = commits + comments
 
-    events.sort(cmp=lambda x, y: cmp(x.key, y.key))
+    events.sort(cmp=_keysort)
 
     grouped = []
     for c in events:
@@ -92,6 +96,6 @@ def commit(request):
 
     events.append(CommentBox(project=project, branch=branch, commit=commit))
 
-    events.sort(cmp=lambda x, y: cmp(x.key, y.key))
+    events.sort(cmp=_keysort)
 
     return {"project": project, "branch": branch, "commit": commit, "events": events}
