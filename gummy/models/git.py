@@ -3,7 +3,7 @@ from subprocess import Popen, PIPE
 from datetime import datetime
 import re
 
-from .db import DBSession, Comment, Event
+from .workspace import Comment, Event
 
 
 def nometa(text):
@@ -63,15 +63,6 @@ class GitProject(Event):
     def get_branch(self, name):
         return self.get_branches()[name]
 
-    def get_comments(self):
-        if not self._comments:
-            self._comments = DBSession.query(Comment).filter(
-                Comment.project==self.name,
-                Comment.branch==None,
-                Comment.commit==None
-            ).all()
-        return self._comments
-
     def __str__(self):
         return "%s: %s" % (self.name, self.description)
 
@@ -108,18 +99,18 @@ class GitBranch(Event):
 
     def get_comments(self, recurse=False):
         if recurse:
-            if not self._comments:
-                self._comments = DBSession.query(Comment).filter(
-                    Comment.project==self.project.name,
-                    Comment.branch==self.name
-                ).all()
-            return self._comments
+            #if not self._comments:
+            #    self._comments = DBSession.query(Comment).filter(
+            #        Comment.project==self.project.name,
+            #        Comment.branch==self.name
+            #    ).all()
+            #return self._comments
+            return []
         else:
-            return DBSession.query(Comment).filter(
-                Comment.project==self.project.name,
-                Comment.branch==self.name,
-                Comment.commit==None
-            ).all()
+            return []
+            #cmd = "cd %s && git notes list %s" % (self.project.root, self.name)
+            #note_sha = Popen(cmd, shell=True, stdout=PIPE).stdout.read()
+            #return Comment.from_json(self.project.repo[note_sha])
 
     def get_participants(self):
         return list(set([x.author for x in self.get_commits() + self.get_comments(recurse=True)]))
@@ -159,11 +150,10 @@ class GitCommit(Event):
         return []
 
     def get_comments(self):
-        return DBSession.query(Comment).filter(
-            Comment.project==self.branch.project.name,
-            Comment.branch==self.branch.name,
-            Comment.commit==self.name
-        ).all()
+        cmd = "cd %s && git notes list %s" % (self.branch.project.root, self.name)
+        note_sha = Popen(cmd, shell=True, stdout=PIPE).stdout.read().strip()
+        note_data = str(self.branch.project.repo[note_sha])
+        return [Comment.from_json(d) for d in note_data.split("\n") if d.strip() != ""]
 
     def __str__(self):
         return self.name + " " + self.author
@@ -192,12 +182,12 @@ class GitCommitSquash(Event):
     def get_patches(self):
         return []
 
-    def get_comments(self):
-        return DBSession.query(Comment).filter(
-            Comment.project==self.branch.project.name,
-            Comment.branch==self.branch.name,
-            Comment.commit==self.name
-        ).all()
+    #def get_comments(self):
+    #    return DBSession.query(Comment).filter(
+    #        Comment.project==self.branch.project.name,
+    #        Comment.branch==self.branch.name,
+    #        Comment.commit==self.name
+    #    ).all()
 
     def __str__(self):
         return self.name + " " + self.author

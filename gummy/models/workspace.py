@@ -1,14 +1,30 @@
 import os
+from datetime import datetime
+import json
 
-from .git import GitProject
-from .db import DBSession, Comment, Event
+from .db import DBSession
+
+
+class Event(object):
+    def __init__(self, type=None):
+        self._comments = None
+        self.type = type
+
+    @property
+    def comments(self):
+        if not self._comments:
+            self.comments = self.get_comments()
+        return self._comments
 
 
 class Workspace(Event):
     def __init__(self, root):
+        Event.__init__(self, "workspace")
         self.root = root
 
     def get_projects(self):
+        from .git import GitProject
+        
         projects = {}
         for project in os.listdir(self.root):
             fullpath = os.path.join(self.root, project)
@@ -27,9 +43,40 @@ class Workspace(Event):
         ).all()
 
 
+class Comment(Event):
+    def __init__(self, author, message, file=None, line=None, timestamp=None):
+        Event.__init__(self, "comment")
+
+        self.author = author
+        self.message = message
+        
+        self.file = file
+        self.line = line
+        
+        if timestamp:
+            self.timestamp = timestamp
+        else:
+            self.timestamp = datetime.now()
+        self.key = self.timestamp
+    
+    @classmethod
+    def from_json(cls, data):
+        try:
+            d = json.loads(data)
+            return Comment(
+                d["author"],
+                d["message"],
+                d["file"],
+                d["line"],
+                d["timestamp"]
+            )
+        except Exception as e:
+            return Comment("Gummy <gummy@example.com>", "Unknown comment format: " + data)
+
+
 class CommitStreak(Event):
     def __init__(self, branch):
-        self.type = "commitstreak"
+        Event.__init__(self, "commitstreak")
 
         self.branch = branch
         self.commits = []

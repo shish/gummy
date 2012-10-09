@@ -13,7 +13,6 @@ from pyramid.paster import (
 from ..models.db import (
     DBSession,
     Base,
-    Comment,
     )
 
 
@@ -34,43 +33,4 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        #model = Comment(
-        #    author="Shish <shish@shishnet.org>",
-        #    message="global comment",
-        #    timestamp=datetime(2012, 10, 04, 23, 03, 35))
-        #DBSession.add(model)
-
-        #model = Comment(
-        #    project="gummy",
-        #    author="Shish <shish@shishnet.org>",
-        #    message="project comment",
-        #    timestamp=datetime(2012, 10, 04, 23, 03, 35))
-        #DBSession.add(model)
-
-        model = Comment(
-            project="gummy",
-            branch="templates",
-            author="Shish <shish@shishnet.org>",
-            message="branch comment",
-            timestamp=datetime(2012, 10, 04, 19, 20, 28))
-        DBSession.add(model)
-
-        model = Comment(
-            project="gummy",
-            branch="templates",
-            commit="b8e4447d1cd7e729bd23668df416cb7fd23aaae5",
-            author="Shish <shish@shishnet.org>",
-            message="commit comment",
-            timestamp=datetime(2012, 10, 04, 23, 03, 35))
-        DBSession.add(model)
-
-        model = Comment(
-            project="gummy",
-            branch="templates",
-            commit="b8e4447d1cd7e729bd23668df416cb7fd23aaae5",
-            file="Makefile",
-            line=6,
-            author="Shish <shish@shishnet.org>",
-            message="file comment",
-            timestamp=datetime(2012, 10, 04, 23, 03, 35))
-        DBSession.add(model)
+        pass
