@@ -1,8 +1,14 @@
 import os
 from subprocess import Popen, PIPE
 from datetime import datetime
+import re
 
 from .db import DBSession, Comment, Event
+
+
+def nometa(text):
+    text = re.sub("git-svn-id: .*", "", text)
+    return text
 
 
 class GitProject(Event):
@@ -68,7 +74,7 @@ class GitBranch(Event):
         self.base = "master"
         self.name = name
         c = project.repo[project.repo.ref("refs/heads/"+name)]
-        self.message = c.message
+        self.message = nometa(c.message)
         self.last_update = datetime.fromtimestamp(c.commit_time)
         self.status = status
         self.key = (1 if self.status == "merged" else 0), self.last_update
@@ -107,7 +113,7 @@ class GitCommit(Event):
         self.author = c.author
         self.author_time = c.author_time
         self.committer = c.committer
-        self.message = c.message
+        self.message = nometa(c.message)
         self.datetime = datetime.fromtimestamp(c.author_time)
         self.key = self.datetime
 
