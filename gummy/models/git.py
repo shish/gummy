@@ -2,6 +2,7 @@ import os
 from subprocess import Popen, PIPE
 from datetime import datetime
 import re
+import tempfile
 
 from .workspace import Comment, Event
 
@@ -35,6 +36,16 @@ class GitProject(Event):
             self.description = file(os.path.join(self.root, "description")).read()
         else:
             self.description = "No description file found"
+        
+        r = self.repo
+        try:
+            self._notes_tree = r[r[r.ref("refs/notes/commits")].tree]
+        except KeyError:
+            self._notes_tree = []
+        try:
+            self._reviews_tree = r[r[r.ref("refs/notes/review")].tree]
+        except KeyError:
+            self._reviews_tree = []
 
     def _get_branches(self, nomerged=None):
         branches = []
@@ -96,13 +107,10 @@ class GitBranch(Event):
 
     def get_comments(self, recurse=False):
         if recurse:
-            #if not self._comments:
-            #    self._comments = DBSession.query(Comment).filter(
-            #        Comment.project==self.project.name,
-            #        Comment.branch==self.name
-            #    ).all()
-            #return self._comments
-            return []
+            cs = []
+            for commit in self.get_commits():
+                cs.extend(commit.get_comments())
+            return cs
         else:
             return []
             #cmd = "cd %s && git notes list %s" % (self.project.root, self.name)
@@ -147,10 +155,17 @@ class GitCommit(Event):
         return []
 
     def get_comments(self):
-        cmd = "cd %s && git notes list %s" % (self.branch.project.root, self.name)
-        note_sha = Popen(cmd, shell=True, stdout=PIPE).stdout.read().strip()
-        note_data = str(self.branch.project.repo[note_sha])
-        return [Comment.from_json(d) for d in note_data.split("\n") if d.strip() != ""]
+        if self.name in self.branch.project._notes_tree:
+            _note_mode, note_sha = self.branch.project._notes_tree[self.name]
+            note_data = str(self.branch.project.repo[note_sha])
+            return [Comment.from_pairs(d) for d in note_data.split("\n\n") if d.strip() != ""]
+        else:
+            return []
+    
+    def add_comment(self, comment):
+        cmd = "cd %s && git notes append -F - %s" % (self.branch.project.root, self.name)
+        p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE)
+        p.communicate(comment.to_pairs())
 
     def __str__(self):
         return self.name + " " + self.author
