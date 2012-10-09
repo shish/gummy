@@ -18,8 +18,7 @@ def index(request):
     projects = workspace.get_projects()
     events = comments + projects.values()
 
-    events = sorted(events)
-    events.reverse()
+    events.sort(cmp=lambda x, y: cmp(x.key, y.key), reverse=True)
 
     return {'events': events}
 
@@ -33,8 +32,7 @@ def project(request):
     branches = project.get_branches()
     events = comments + branches.values()
 
-    events = sorted(events)
-    events.reverse()
+    events.sort(cmp=lambda x, y: cmp(x.key, y.key), reverse=True)
 
     return {"project": project, "events": events}
 
@@ -54,7 +52,9 @@ def branch(request):
 
     commits = branch.get_commits(squash)
     comments = branch.get_comments()
-    events = sorted(commits + comments)
+    events = commits + comments
+
+    events.sort(cmp=lambda x, y: cmp(x.key, y.key), reverse=True)
 
     grouped = []
     for c in events:
@@ -92,4 +92,6 @@ def commit(request):
 
     events.append(CommentBox(project=project, branch=branch, commit=commit))
 
-    return {"project": project, "branch": branch, "commit": commit, "events": sorted(events)}
+    events.sort(cmp=lambda x, y: cmp(x.key, y.key), reverse=True)
+
+    return {"project": project, "branch": branch, "commit": commit, "events": events}

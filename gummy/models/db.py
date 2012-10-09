@@ -24,9 +24,6 @@ class Event(object):
     def __init__(self):
         self._comments = None
 
-    def __cmp__(self, other):
-        return cmp(str(self.key), str(other.key))
-
     @property
     def comments(self):
         if not self._comments:
