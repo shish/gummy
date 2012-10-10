@@ -34,11 +34,25 @@
 				<input type="hidden" name="commit" value="{{ cb.commit.name or '' }}" />
 				<input type="hidden" name="file" value="{{ cb.file or '' }}" />
 				<input type="hidden" name="line" value="{{ cb.line or '' }}" />
-				<span class="author">
+				<span class="title">
 					<input type="text" name="author" placeholder="Name &lt;email@example.com&gt;" />
 				</span>
 			</div>
 			<div class="message">
+				<span class="vote review">
+					Review:
+					<label title="Do not merge"><input type="radio" name="review" value="-2" />-2</label>
+					<label title="Changes needed"><input type="radio" name="review" value="-1" />-1</label>
+					<label title="Opinion unchanged"><input type="radio" name="review" value="0" checked />0</label>
+					<label title="Looks ok"><input type="radio" name="review" value="+1" />+1</label>
+					<label title="Merge it"><input type="radio" name="review" value="+2" />+2</label>
+				</span>
+				<span class="vote verify">
+					Verify:
+					<label><input type="radio" name="verify" value="-1" />Fail</label>
+					<label><input type="radio" name="verify" value="0" checked />Unknown</label>
+					<label><input type="radio" name="verify" value="+1" />Pass</label>
+				</span>
 				<textarea name="message"></textarea>
 				<input type="submit" value="Submit Comment" />
 			</div>
