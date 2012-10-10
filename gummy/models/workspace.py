@@ -44,7 +44,7 @@ class Workspace(Event):
 
 
 class Comment(Event):
-    def __init__(self, author, message, id=None, project=None, branch=None, commit=None, file=None, line=None, timestamp=None):
+    def __init__(self, author, message, id=None, project=None, branch=None, commit=None, file=None, line=None, timestamp=None, review=None, verify=None):
         Event.__init__(self, "comment")
 
         if id:
@@ -61,6 +61,8 @@ class Comment(Event):
         
         self.file = file
         self.line = line
+        self.review = review
+        self.verify = verify
         
         if timestamp:
             if isinstance(timestamp, str):
@@ -88,7 +90,7 @@ class Comment(Event):
 
     def to_pairs(self):
         ps = []
-        for k in ["id", "author", "message", "timestamp"]:
+        for k in ["id", "author", "message", "timestamp", "review", "verify"]:
             ps.append("%s: %s" % (k.title(), getattr(self, k)))
         return "\n".join(ps)
 

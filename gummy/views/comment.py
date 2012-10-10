@@ -28,6 +28,8 @@ def add_comment(request):
         commit = request.POST.get("commit"),
         file = request.POST.get("file") or None,
         line = request.POST.get("line") or None,
+        review = request.POST.get("file") or None,
+        verify = request.POST.get("line") or None,
         timestamp = datetime.datetime.now(),
     ))
     
