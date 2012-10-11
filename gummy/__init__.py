@@ -33,6 +33,7 @@ def config_templates(config):
     env.globals['len'] = len
     env.globals['avatar'] = avatar
     env.globals['name'] = name
+    env.globals['score2css'] = score2css
 
     # per-request globals
     def add_renderer_globals(event):
