@@ -22,7 +22,7 @@
 
 {% macro render_commentbox(cb) -%}
 	<li class='comment'>
-		<form action="/comment" method="POST">
+		<form action="{{ route_url("comment") }}" method="POST">
 			<div class="header">
 				{% if cb.author %}
 				<span class="icon">
@@ -35,7 +35,7 @@
 				<input type="hidden" name="file" value="{{ cb.file or '' }}" />
 				<input type="hidden" name="line" value="{{ cb.line or '' }}" />
 				<span class="title">
-					<input type="text" name="author" placeholder="Name &lt;email@example.com&gt;" />
+					<input type="text" name="author" placeholder="Name &lt;email@example.com&gt;" required />
 				</span>
 			</div>
 			<div class="message">
@@ -43,14 +43,14 @@
 					Review:
 					<label title="Do not merge"><input type="radio" name="review" value="-2" />-2</label>
 					<label title="Changes needed"><input type="radio" name="review" value="-1" />-1</label>
-					<label title="Opinion unchanged"><input type="radio" name="review" value="0" checked />0</label>
+					<label title="Opinion unchanged"><input type="radio" name="review" checked />0</label>
 					<label title="Looks ok"><input type="radio" name="review" value="+1" />+1</label>
 					<label title="Merge it"><input type="radio" name="review" value="+2" />+2</label>
 				</span>
 				<span class="vote verify">
 					Verify:
 					<label><input type="radio" name="verify" value="-1" />Fail</label>
-					<label><input type="radio" name="verify" value="0" checked />Unknown</label>
+					<label><input type="radio" name="verify" checked />Unknown</label>
 					<label><input type="radio" name="verify" value="+1" />Pass</label>
 				</span>
 				<textarea name="message"></textarea>
@@ -206,8 +206,20 @@
 			</span>
 		</div>
 		<div class="message">
-			    Verify Score: {{ sb.verified }}
-			<br>Review Score: {{ sb.reviewed }}
+            Verify Score:
+            {% if sb.verified == "-1" %}
+                Fail ({{ name(sb.verifier) }})
+            {% elif sb.verified == "+1" %}
+                Pass ({{ name(sb.verifier) }})
+            {% else %}
+                Unknown
+            {% endif %}
+
+			<br>Review Score:
+            {% if %}
+            {% else %}
+            {{ sb.reviews }}
+            {% endif %}
 		</div>
 	</li>
 {%- endmacro %}

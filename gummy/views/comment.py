@@ -33,4 +33,4 @@ def add_comment(request):
         timestamp = datetime.datetime.now(),
     ))
     
-    return HTTPFound(request.referrer)
+    return HTTPFound(request.referrer or "/")

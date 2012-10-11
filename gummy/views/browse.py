@@ -67,7 +67,16 @@ def branch(request):
         if g.commits[0].type != "commit":
             grouped[n] = g.commits[0]
 
-    grouped.append(StatusBox(0, 0))
+    verified = "0"
+    verifier = None
+    for comment in commits[-1].get_comments():
+        if comment.verify:
+            verified = comment.verify
+            verifier = comment.author
+
+    reviews = {}
+
+    grouped.append(StatusBox(reviews, verified, verifier))
     grouped.append(CommentBox(project=project, branch=branch))
 
     return {"project": project, "branch": branch, "events": grouped}

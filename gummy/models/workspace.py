@@ -91,7 +91,8 @@ class Comment(Event):
     def to_pairs(self):
         ps = []
         for k in ["id", "author", "message", "timestamp", "review", "verify"]:
-            ps.append("%s: %s" % (k.title(), getattr(self, k)))
+            if getattr(self, k):
+                ps.append("%s: %s" % (k.title(), getattr(self, k)))
         return "\n".join(ps)
 
 
@@ -125,10 +126,11 @@ class CommentBox(Event):
 
 
 class StatusBox(Event):
-    def __init__(self, reviewed, verified):
+    def __init__(self, reviews, verified, verifier):
         Event.__init__(self, "statusbox")
-        
-        self.reviewed = reviewed
+
+        self.reviews = reviews
         self.verified = verified
+        self.verifier = verifier
 
         self.key = "yyy"
