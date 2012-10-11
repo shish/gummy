@@ -3,7 +3,6 @@ from pyramid.httpexceptions import HTTPFound
 
 import datetime
 import os
-import uuid
 
 from ..models.workspace import Workspace, Comment
 
@@ -18,19 +17,23 @@ def add_comment(request):
     else:
         #target = b  # comment on the branch itself
         target = b.get_commits()[-1]  # most recent commit
+
+    d = {}
+    d["id"] = request.POST.get("id") or None
+    d["author"] = request.POST.get("author")
+    d["message"] = request.POST.get("message")
+    d["project"] = request.POST.get("project")
+    d["branch"] = request.POST.get("branch")
+    d["commit"] = request.POST.get("commit")
+    d["file"] = request.POST.get("file") or None
+    d["line"] = request.POST.get("line") or None
     
-    target.add_comment(Comment(
-        id = request.POST.get("id") or None,
-        author = request.POST.get("author"),
-        message = request.POST.get("message"),
-        project = request.POST.get("project"),
-        branch = request.POST.get("branch"),
-        commit = request.POST.get("commit"),
-        file = request.POST.get("file") or None,
-        line = request.POST.get("line") or None,
-        review = request.POST.get("file") or None,
-        verify = request.POST.get("line") or None,
-        timestamp = datetime.datetime.now(),
-    ))
+    if request.POST.get("review") not in ["0", "", None]:
+        d["review"] = request.POST.get("review")
+    if request.POST.get("verify") not in ["0", "", None]:
+        d["verify"] = request.POST.get("verify")
+        
+    d["timestamp"] = datetime.datetime.now()
+    target.add_comment(Comment(**d))
     
     return HTTPFound(request.referrer or "/")

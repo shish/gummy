@@ -2,7 +2,6 @@ import os
 from subprocess import Popen, PIPE
 from datetime import datetime
 import re
-import tempfile
 
 from .workspace import Comment, Event
 
@@ -11,6 +10,30 @@ def nometa(text):
     text = re.sub("git-svn-id: .*", "", text)
     return text
 
+    
+def _get_changed_regions(root, origin, commit):
+    file_regions = {}
+    latest_file = None
+    cmd = "cd %s && git diff %s...%s" % (root, origin, commit)
+    for line in Popen(cmd, shell=True, stdout=PIPE).stdout.readlines():
+        line = line.strip()
+        if line.startswith("diff --git a/"):
+            latest_file = line.split()[2][2:]
+            if latest_file not in file_regions:
+                file_regions[latest_file] = []
+        if line.startswith("@@"):
+            parts = line.split()
+            linesout = parts[1]
+            linesin = parts[2]
+            file_regions[latest_file].append((linesout, linesin))
+    return file_regions
+
+
+def _regions_overlap(ra, rb):
+    return True
+
+if __name__ == "__main__":
+    print _get_changed_regions("./", "master", "reviews")
 
 class GitProject(Event):
     def __init__(self, workspace, name):
@@ -59,15 +82,15 @@ class GitProject(Event):
 
     def get_branches(self):
         all_branches = self._get_branches()
-        main = "develop" if "develop" in all_branches else "master"
-        unmerged_branches = self._get_branches(nomerged=main)
+        base = "develop" if "develop" in all_branches else "master"
+        unmerged_branches = self._get_branches(nomerged=base)
 
         branches = {}
         for name in all_branches:
             status = "merged"
             if name in unmerged_branches:
                 status = "unmerged"
-            branches[name] = GitBranch(self, name, status)
+            branches[name] = GitBranch(self, name, base, status)
 
         return branches
 
@@ -79,12 +102,12 @@ class GitProject(Event):
 
 
 class GitBranch(Event):
-    def __init__(self, project, name, status):
+    def __init__(self, project, name, base, status):
         self.type = "branch"
         self._comments = None
 
         self.project = project
-        self.base = "master"
+        self.base = base
         self.name = name
         c = project.repo[project.repo.ref("refs/heads/"+name)]
         self.message = nometa(c.message)
@@ -101,6 +124,22 @@ class GitBranch(Event):
             commits.append(GitCommit(self, name))
         commits.reverse()
         return commits
+                
+    def can_merge(self):
+        xa = _get_changed_regions(self.project.root, self.base, self.name)
+        xb = _get_changed_regions(self.project.root, self.name, self.base)
+        
+        for filename in xa:
+            regions_a = xa.get(filename, [])
+            regions_b = xb.get(filename, [])
+            if _regions_overlap(regions_a, regions_b):
+                return False
+        
+        return True
+            
+    #def merge(self):
+    #    cmd = "cd %s && git rev-list %s..%s" % (self.project.root, self.base, self.name)
+    #    Popen(cmd, shell=True, stdout=PIPE).stdout.read()
 
     def get_commit(self, name):
         return GitCommit(self, name)
