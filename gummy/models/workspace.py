@@ -44,26 +44,24 @@ class Workspace(Event):
 
 
 class Comment(Event):
-    def __init__(self, author, message, id=None, project=None, branch=None, commit=None, file=None, line=None, timestamp=None, review=None, verify=None):
+    def __init__(self, **kwargs):
         Event.__init__(self, "comment")
 
-        if id:
-            self.id = id
-        else:
-            self.id = uuid.uuid1()
+        self.id = kwargs.get("id") or uuid.uuid1()
 
-        self.project = project
-        self.branch = branch
-        self.commit = commit
+        self.project = kwargs.get("project")
+        self.branch = kwargs.get("branch")
+        self.commit = kwargs.get("commit")
 
-        self.author = author
-        self.message = message
+        self.author = kwargs.get("author") or "Gummy <shish+gummy@shishnet.org>"
+        self.message = kwargs.get("message")
         
-        self.file = file
-        self.line = line
-        self.review = review
-        self.verify = verify
+        self.file = kwargs.get("file")
+        self.line = kwargs.get("line")
+        self.review = kwargs.get("review")
+        self.verify = kwargs.get("verify")
         
+        timestamp = kwargs.get("timestamp")
         if timestamp:
             if isinstance(timestamp, str):
                 self.timestamp = datetime.strptime(timestamp[:19], "%Y-%m-%d %H:%M:%S")
@@ -91,7 +89,8 @@ class Comment(Event):
     def to_pairs(self):
         ps = []
         for k in ["id", "author", "message", "timestamp", "review", "verify"]:
-            ps.append("%s: %s" % (k.title(), getattr(self, k)))
+            if getattr(self, k):
+                ps.append("%s: %s" % (k.title(), getattr(self, k)))
         return "\n".join(ps)
 
 
