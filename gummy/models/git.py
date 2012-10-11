@@ -59,15 +59,15 @@ class GitProject(Event):
 
     def get_branches(self):
         all_branches = self._get_branches()
-        main = "develop" if "develop" in all_branches else "master"
-        unmerged_branches = self._get_branches(nomerged=main)
+        base = "develop" if "develop" in all_branches else "master"
+        unmerged_branches = self._get_branches(nomerged=base)
 
         branches = {}
         for name in all_branches:
             status = "merged"
             if name in unmerged_branches:
                 status = "unmerged"
-            branches[name] = GitBranch(self, name, status)
+            branches[name] = GitBranch(self, name, base, status)
 
         return branches
 
@@ -79,12 +79,12 @@ class GitProject(Event):
 
 
 class GitBranch(Event):
-    def __init__(self, project, name, status):
+    def __init__(self, project, name, base, status):
         self.type = "branch"
         self._comments = None
 
         self.project = project
-        self.base = "master"
+        self.base = base
         self.name = name
         c = project.repo[project.repo.ref("refs/heads/"+name)]
         self.message = nometa(c.message)
