@@ -216,8 +216,10 @@
 			{% endif %}
 
 			<br>Review Score:
-			{% if sb.reviews%}
-				{{ sb.reviews }}
+			{% if sb.reviews %}
+				{% for reviewer, score in sb.reviews.items() %}
+					<span class="review {{ score2css(score) }}">{{ reviewer }}</span>
+				{% endfor %}
 			{% else %}
 				No Reviews
 			{% endif %}

@@ -27,6 +27,9 @@ def config_templates(config):
             author = m.group(1)
         return author
 
+    def score2css(score):
+        return {"-2": "no", "-1": "eh", "+1": "ok", "+2": "ja"}[score]
+
     env.globals['len'] = len
     env.globals['avatar'] = avatar
     env.globals['name'] = name

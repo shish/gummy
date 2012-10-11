@@ -70,6 +70,10 @@ def branch(request):
             verifier = comment.author
 
     reviews = {}
+    for commit in commits:
+        for comment in commit.get_comments():
+            if comment.review:
+                reviews[commit.author] = comment.review
 
     grouped.append(StatusBox(reviews, verified, verifier))
     grouped.append(CommentBox(project=project, branch=branch))

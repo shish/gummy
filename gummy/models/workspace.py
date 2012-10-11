@@ -54,13 +54,13 @@ class Comment(Event):
         self.commit = kwargs.get("commit")
 
         self.author = kwargs.get("author") or "Gummy <shish+gummy@shishnet.org>"
-        self.message = kwargs.get("message")
-        
+        self.message = kwargs.get("message") or ""
+
         self.file = kwargs.get("file")
         self.line = kwargs.get("line")
         self.review = kwargs.get("review")
         self.verify = kwargs.get("verify")
-        
+
         timestamp = kwargs.get("timestamp")
         if timestamp:
             if isinstance(timestamp, str):
@@ -70,7 +70,7 @@ class Comment(Event):
         else:
             self.timestamp = datetime.now()
         self.key = self.timestamp
-    
+
     @classmethod
     def from_pairs(cls, commit, data):
         args = {

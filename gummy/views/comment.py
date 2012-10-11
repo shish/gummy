@@ -20,20 +20,24 @@ def add_comment(request):
 
     d = {}
     d["id"] = request.POST.get("id") or None
-    d["author"] = request.POST.get("author")
-    d["message"] = request.POST.get("message")
-    d["project"] = request.POST.get("project")
-    d["branch"] = request.POST.get("branch")
-    d["commit"] = request.POST.get("commit")
+    d["author"] = request.POST.get("author") or None
+    d["message"] = request.POST.get("message") or None
+    d["project"] = request.POST.get("project") or None
+    d["branch"] = request.POST.get("branch") or None
+    d["commit"] = request.POST.get("commit") or None
     d["file"] = request.POST.get("file") or None
     d["line"] = request.POST.get("line") or None
-    
+
     if request.POST.get("review") not in ["0", "", None]:
         d["review"] = request.POST.get("review")
     if request.POST.get("verify") not in ["0", "", None]:
         d["verify"] = request.POST.get("verify")
-        
+
     d["timestamp"] = datetime.datetime.now()
+
+    if not d["author"]:
+        return "Author is needed!"
+
     target.add_comment(Comment(**d))
     
     return HTTPFound(request.referrer or "/")
