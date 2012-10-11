@@ -206,20 +206,21 @@
 			</span>
 		</div>
 		<div class="message">
-            Verify Score:
-            {% if sb.verified == "-1" %}
-                Fail ({{ name(sb.verifier) }})
-            {% elif sb.verified == "+1" %}
-                Pass ({{ name(sb.verifier) }})
-            {% else %}
-                Unknown
-            {% endif %}
+			Verify Score:
+			{% if sb.verified == "-1" %}
+				Fail ({{ name(sb.verifier) }})
+			{% elif sb.verified == "+1" %}
+				Pass ({{ name(sb.verifier) }})
+			{% else %}
+				Unknown
+			{% endif %}
 
 			<br>Review Score:
-            {% if %}
-            {% else %}
-            {{ sb.reviews }}
-            {% endif %}
+			{% if sb.reviews%}
+				{{ sb.reviews }}
+			{% else %}
+				No Reviews
+			{% endif %}
 		</div>
 	</li>
 {%- endmacro %}
