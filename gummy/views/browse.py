@@ -5,18 +5,13 @@ import os
 from ..models.workspace import Workspace, CommitStreak, CommentBox, StatusBox
 
 
-appconf = {
-    "project_root": os.path.expanduser("~/workspace/"),
-}
-
-
 def _keysort(x, y):
     return cmp(str(x.key), str(y.key))
 
 
 @view_config(route_name='index', renderer='templates/index.jinja2')
 def index(request):
-    workspace = Workspace(appconf.get("project_root"))
+    workspace = Workspace(os.path.expanduser(request.registry.settings['project_root']))
 
     events = workspace.get_projects().values()
     events.sort(cmp=_keysort, reverse=True)
@@ -26,7 +21,7 @@ def index(request):
 
 @view_config(route_name='project', renderer='templates/project.jinja2')
 def project(request):
-    workspace = Workspace(appconf.get("project_root"))
+    workspace = Workspace(os.path.expanduser(request.registry.settings['project_root']))
     project = workspace.get_project(request.matchdict["project"])
 
     events = project.get_branches().values()
@@ -37,7 +32,7 @@ def project(request):
 
 @view_config(route_name='branch', renderer='templates/branch.jinja2')
 def branch(request):
-    workspace = Workspace(appconf.get("project_root"))
+    workspace = Workspace(os.path.expanduser(request.registry.settings['project_root']))
     project = workspace.get_project(request.matchdict["project"])
     branch = project.get_branch(request.matchdict["branch"])
 

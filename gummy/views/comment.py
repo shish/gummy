@@ -9,7 +9,7 @@ from ..models.workspace import Workspace, Comment
 
 @view_config(route_name='comment', request_method="POST")
 def add_comment(request):
-    w = Workspace(os.path.expanduser("~/workspace/"))
+    w = Workspace(os.path.expanduser(request.registry.settings['project_root']))
     p = w.get_project(request.POST.get("project"))
     b = p.get_branch(request.POST.get("branch"))
     if request.POST.get("commit"):
