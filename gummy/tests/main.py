@@ -6,9 +6,10 @@ from pyramid import testing
 from ..models.db import DBSession
 
 
-class TestMyView(unittest.TestCase):
+class TestBrowse(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
+        self.config.add_settings(project_root="../")
         from sqlalchemy import create_engine
         engine = create_engine('sqlite://')
         from ..models.db import Base

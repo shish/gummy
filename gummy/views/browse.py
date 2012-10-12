@@ -64,10 +64,11 @@ def branch(request):
 
     verified = "0"
     verifier = None
-    for comment in commits[-1].get_comments():
-        if comment.verify:
-            verified = comment.verify
-            verifier = comment.author
+    if commits:
+        for comment in commits[-1].get_comments():
+            if comment.verify:
+                verified = comment.verify
+                verifier = comment.author
 
     reviews = {}
     for commit in commits:
