@@ -12,6 +12,7 @@ test:
 	git branch develop origin/develop || true
 	virtualenv .venv
 	.venv/bin/python setup.py develop
+	.venv/bin/pip install pep8 nose coverage
 	.venv/bin/pep8 --max-line-length 150 `find gummy -name "*.py"` || true
 	.venv/bin/nosetests -v --with-doctest --with-coverage --cover-package=gummy `find gummy -name "*.py"`
 

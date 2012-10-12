@@ -16,10 +16,6 @@ requires = [
     'zope.sqlalchemy',
     'waitress',
     'dulwich',
-    # testing
-    'nose',
-    'coverage',
-    'pep8',
     ]
 
 setup(name='gummy',
@@ -32,9 +28,9 @@ setup(name='gummy',
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
-      author='',
-      author_email='',
-      url='',
+      author='Shish',
+      author_email='shish+gummy@shishnet.org',
+      url='http://code.shishnet.org/gummy',
       keywords='web wsgi bfg pylons pyramid',
       packages=find_packages(),
       include_package_data=True,
