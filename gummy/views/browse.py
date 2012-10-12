@@ -84,7 +84,7 @@ def branch(request):
 
 @view_config(route_name='commit', renderer='templates/commit.jinja2')
 def commit(request):
-    workspace = Workspace(appconf.get("project_root"))
+    workspace = Workspace(os.path.expanduser(request.registry.settings['project_root']))
     project = workspace.get_project(request.matchdict["project"])
     branch = project.get_branch(request.matchdict["branch"])
     commit = branch.get_commit(request.matchdict["commit"])
