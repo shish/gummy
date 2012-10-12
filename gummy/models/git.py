@@ -89,6 +89,8 @@ class GitProject(Event):
 
         branches = {}
         for name in all_branches:
+            if name == "(no head)":
+                continue
             status = "merged"
             if name in unmerged_branches:
                 status = "unmerged"
