@@ -1,5 +1,6 @@
 import unittest
 import transaction
+import os
 
 from pyramid import testing
 
@@ -19,6 +20,8 @@ class TestBrowse(unittest.TestCase):
             pass
         #    model = MyModel(name='one', value=55)
         #    DBSession.add(model)
+        
+        self.project = os.path.basename(os.getcwd())
 
     def tearDown(self):
         DBSession.remove()
@@ -33,7 +36,7 @@ class TestBrowse(unittest.TestCase):
     def test_project(self):
         from ..views.browse import project
         request = testing.DummyRequest(matchdict={
-            "project": "gummy",
+            "project": self.project,
         })
         info = project(request)
         self.assertEqual(type(info['events']), list)
@@ -41,7 +44,7 @@ class TestBrowse(unittest.TestCase):
     def test_branch(self):
         from ..views.browse import branch
         request = testing.DummyRequest(matchdict={
-            "project": "gummy",
+            "project": self.project,
             "branch": "develop",
         })
         info = branch(request)
@@ -50,7 +53,7 @@ class TestBrowse(unittest.TestCase):
     def test_commit(self):
         from ..views.browse import branch
         request = testing.DummyRequest(matchdict={
-            "project": "gummy",
+            "project": self.project,
             "branch": "develop",
             "commit": "29e5d5631cc84f25427b52689e015687018c288f",
         })
