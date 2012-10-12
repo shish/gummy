@@ -27,16 +27,31 @@ class TestMyView(unittest.TestCase):
         from ..views.browse import index
         request = testing.DummyRequest()
         info = index(request)
-        #self.assertEqual(info['events'], {})
+        self.assertEqual(type(info['events']), list)
 
     def test_project(self):
         from ..views.browse import project
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(matchdict={
+            "project": "gummy",
+        })
         info = project(request)
-        #self.assertEqual(info['events'], {})
+        self.assertEqual(type(info['events']), list)
 
     def test_branch(self):
         from ..views.browse import branch
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(matchdict={
+            "project": "gummy",
+            "branch": "develop",
+        })
         info = branch(request)
-        #self.assertEqual(info['events'], {})
+        self.assertEqual(type(info['events']), list)
+
+    def test_commit(self):
+        from ..views.browse import branch
+        request = testing.DummyRequest(matchdict={
+            "project": "gummy",
+            "branch": "develop",
+            "commit": "29e5d5631cc84f25427b52689e015687018c288f",
+        })
+        info = branch(request)
+        self.assertEqual(type(info['events']), list)
