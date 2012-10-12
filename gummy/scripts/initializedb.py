@@ -5,15 +5,9 @@ from datetime import datetime
 
 from sqlalchemy import engine_from_config
 
-from pyramid.paster import (
-    get_appsettings,
-    setup_logging,
-    )
+from pyramid.paster import get_appsettings, setup_logging
 
-from ..models.db import (
-    DBSession,
-    Base,
-    )
+from ..models.db import DBSession, Base
 
 
 def usage(argv):

@@ -39,5 +39,5 @@ def add_comment(request):
         return "Author is needed!"
 
     target.add_comment(Comment(**d))
-    
+
     return HTTPFound(request.referrer or "/")

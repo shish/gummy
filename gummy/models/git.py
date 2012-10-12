@@ -10,7 +10,7 @@ def nometa(text):
     text = re.sub("git-svn-id: .*", "", text)
     return text
 
-    
+
 def _get_changed_regions(root, origin, commit):
     file_regions = {}
     latest_file = None
@@ -32,8 +32,10 @@ def _get_changed_regions(root, origin, commit):
 def _regions_overlap(ra, rb):
     return True
 
+
 if __name__ == "__main__":
     print _get_changed_regions("./", "master", "reviews")
+
 
 class GitProject(Event):
     def __init__(self, workspace, name):
@@ -59,7 +61,7 @@ class GitProject(Event):
             self.description = file(os.path.join(self.root, "description")).read()
         else:
             self.description = "No description file found"
-        
+
         r = self.repo
         try:
             self._notes_tree = r[r[r.ref("refs/notes/commits")].tree]
@@ -109,7 +111,7 @@ class GitBranch(Event):
         self.project = project
         self.base = base
         self.name = name
-        c = project.repo[project.repo.ref("refs/heads/"+name)]
+        c = project.repo[project.repo.ref("refs/heads/" + name)]
         self.message = nometa(c.message)
         self.timestamp = datetime.fromtimestamp(c.commit_time)
         self.status = status
@@ -124,19 +126,19 @@ class GitBranch(Event):
             commits.append(GitCommit(self, name))
         commits.reverse()
         return commits
-                
+
     def can_merge(self):
         xa = _get_changed_regions(self.project.root, self.base, self.name)
         xb = _get_changed_regions(self.project.root, self.name, self.base)
-        
+
         for filename in xa:
             regions_a = xa.get(filename, [])
             regions_b = xb.get(filename, [])
             if _regions_overlap(regions_a, regions_b):
                 return False
-        
+
         return True
-            
+
     #def merge(self):
     #    cmd = "cd %s && git rev-list %s..%s" % (self.project.root, self.base, self.name)
     #    Popen(cmd, shell=True, stdout=PIPE).stdout.read()
@@ -200,7 +202,7 @@ class GitCommit(Event):
             return [Comment.from_pairs(self, d) for d in note_data.split("\n\n") if d.strip() != ""]
         else:
             return []
-    
+
     def add_comment(self, comment):
         cmd = "cd %s && git notes append -F - %s" % (self.branch.project.root, self.name)
         p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE)

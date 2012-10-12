@@ -24,7 +24,7 @@ class Workspace(Event):
 
     def get_projects(self):
         from .git import GitProject
-        
+
         projects = {}
         for project in os.listdir(self.root):
             fullpath = os.path.join(self.root, project)
@@ -37,9 +37,9 @@ class Workspace(Event):
 
     def get_comments(self):
         return DBSession.query(Comment).filter(
-            Comment.project==None,
-            Comment.branch==None,
-            Comment.commit==None
+            Comment.project == None,
+            Comment.branch == None,
+            Comment.commit == None
         ).all()
 
 

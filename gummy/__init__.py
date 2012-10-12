@@ -38,7 +38,7 @@ def config_templates(config):
     # per-request globals
     def add_renderer_globals(event):
         def simple_static_url(name):
-            return event["request"].static_url('gummy:static/'+name)
+            return event["request"].static_url('gummy:static/' + name)
         env.globals['static_url'] = simple_static_url
         env.globals['route_url'] = event["request"].route_url
         env.globals['route_path'] = event["request"].route_path
