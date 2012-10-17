@@ -1,7 +1,7 @@
 import unittest
 import transaction
 import os
-
+from ConfigParser import SafeConfigParser
 from pyramid import testing
 
 from ..models.db import DBSession
@@ -20,7 +20,7 @@ class TestBrowse(unittest.TestCase):
             pass
         #    model = MyModel(name='one', value=55)
         #    DBSession.add(model)
-        
+
         self.project = os.path.basename(os.getcwd())
 
     def tearDown(self):
@@ -59,3 +59,27 @@ class TestBrowse(unittest.TestCase):
         })
         info = branch(request)
         self.assertEqual(type(info['events']), list)
+
+
+class SysTests(unittest.TestCase):
+    def setUp(self):
+        conf = SafeConfigParser({"here": "./"})
+        conf.read("development.ini")
+
+        optdict = {}
+        for opt in conf.options("app:main"):
+            optdict[opt] = conf.get("app:main", opt)
+        optdict["sqlalchemy.url"] = "sqlite://"
+
+        from gummy import main
+        app = main({}, **optdict)
+
+        from webtest import TestApp
+        self.testapp = TestApp(app)
+
+    def tearDown(self):
+        DBSession.remove()
+
+    def test_root(self):
+        res = self.testapp.get('/', status=200)
+        self.failUnless('Shish' in res.body)
